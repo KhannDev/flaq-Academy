@@ -120,7 +120,7 @@ export class CreatorsService {
    * @param data Campaign data
    */
   collectionFromSchema = async (client, threadID, data: CampaignDto) => {
-    const created = await client.create(threadID, 'campaign', [
+    const created = await client.create(threadID, 'Campaign', [
       {
         title: data.title,
         description: data.description1,
@@ -132,7 +132,7 @@ export class CreatorsService {
       },
     ]);
 
-    const all = await client.find(threadID, 'campaign', {});
+    const all = await client.find(threadID, 'Campaign', {});
     console.log(await all);
   };
 }
