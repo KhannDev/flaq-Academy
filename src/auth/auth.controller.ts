@@ -228,9 +228,10 @@ export class AuthController {
       throw new HttpException('Invalid Body request', HttpStatus.BAD_REQUEST);
     }
 
-    // Check if the user if part of Flaq Club guild and the role of the user
+    // Check if the user is part of Flaq Club guild
     await this.authservice.userGuild(res.data.access_token);
 
+    // Check the role of the user
     const userRole = await this.authservice.getUserRole(res.data.access_token);
     console.log(userRole);
 
