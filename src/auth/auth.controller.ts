@@ -26,7 +26,7 @@ import { DiscordCodeDto } from './dto/auth.dto';
 import { RefreshTokenDto } from 'src/campaigns/dto/campaign.dto';
 
 /**
- * Controller to handle Authentication
+ * Controller for handle Authentication
  */
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,7 +41,7 @@ export class AuthController {
   ) {}
 
   /**
-   * User sign up
+   * User sign u
    * @body email, password and device token
    * @returns access and refresh token
    */
@@ -51,10 +51,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 201, description: 'The User is created Successfully' })
   @Post('/signup')
-  async signUp(
-    @Body() data: UserCredentialsDto,
-    @Res({ passthrough: true }) response: Response,
-  ) {
+  async signUp(@Body() data, @Res({ passthrough: true }) response: Response) {
     const user = await this.userservice.findUserwithEmail(data.email);
 
     if (!user) {
