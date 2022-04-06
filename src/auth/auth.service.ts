@@ -13,7 +13,7 @@ import { UserService } from '../user/user.service';
 import { RefreshToken } from '../utils/jwt/schema/Refreshtoken';
 import { Creators } from './schema/auth.schema';
 
-/** Service to handle Authentication funtionality */
+/** Service for handle Authentication funtionality */
 
 @Injectable()
 export class AuthService {
