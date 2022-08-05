@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { async } from 'rxjs';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 import configration from './common/configration';
 
 @Module({
@@ -14,11 +16,12 @@ import configration from './common/configration';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (config: ConfigService) => ({
+      useFactory: async () => ({
         uri: configration().databaseURI,
       }),
-      inject: [ConfigService],
     }),
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
