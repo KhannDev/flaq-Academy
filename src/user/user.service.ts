@@ -24,4 +24,10 @@ export class UserService {
     });
     return user;
   }
+  async UpdateDeviceToken() {}
+  findUserwithEmail(email: string) {
+    console.log(email);
+    return this.userModel.findOne({ Email: email }).select('+password');
+  }
+  async VerifyPassword(Password) {}
 }

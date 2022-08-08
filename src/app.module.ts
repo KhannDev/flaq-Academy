@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import configration from './common/configration';
+import { JwtsService } from './utils/jwt/jwt.service';
+import { CampaignsModule } from './campaigns/campaigns.module';
 
 @Module({
   imports: [
@@ -22,8 +24,9 @@ import configration from './common/configration';
     }),
     AuthModule,
     UserModule,
+    CampaignsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtsService],
 })
 export class AppModule {}
