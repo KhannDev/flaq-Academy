@@ -40,7 +40,7 @@ export class UserAuthGuard implements CanActivate {
       const user = await this.auth.findUserwithEmail(useremail);
       if (!user) throw new HttpException('User', HttpStatus.BAD_REQUEST);
       // @ts-ignore
-      req.merchant = merchant;
+      req.user = user;
       return true;
     } catch (e) {
       return false;

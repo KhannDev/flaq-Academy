@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/user/schema/user.schema';
 import { UserService } from 'src/user/user.service';
 import { HashingService } from 'src/utils/hashing/hashing.service';
+import { IdGeneratorService } from 'src/utils/Id-generator/Id-generator.service';
 import { JwtsService } from 'src/utils/jwt/jwt.service';
 import {
   RefreshToken,
@@ -19,7 +20,13 @@ import { AuthService } from './auth.service';
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, HashingService, JwtsService],
+  providers: [
+    AuthService,
+    UserService,
+    HashingService,
+    JwtsService,
+    IdGeneratorService,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}
