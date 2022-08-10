@@ -13,6 +13,6 @@ import { UserService } from './user.service';
   ],
   controllers: [UserController],
   providers: [UserService, HashingService, IdGeneratorService],
-  // exports: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

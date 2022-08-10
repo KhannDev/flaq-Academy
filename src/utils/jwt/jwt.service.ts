@@ -25,18 +25,18 @@ export class JwtsService {
     });
   }
   async decodeAccessToken(token) {
-    try {
-      const tokenz: any = jwt.verify(token, configration().jwtsecret);
-      //   console.log(tokenz);
-      return tokenz.email;
-    } catch (e) {
+    const tokenz: any = jwt.verify(token, configration().jwtsecret);
+    console.log('Tokenz', tokenz);
+    if (tokenz) {
+      return tokenz.Email;
+    } else {
       throw new HttpException('Invalid Access Token', HttpStatus.UNAUTHORIZED);
     }
   }
 
   /**Get Access and refresh token */
-  async CreateAccesstoken(email) {
-    return jwt.sign({ email }, configration().jwtsecret, {
+  async CreateAccesstoken(Email) {
+    return jwt.sign({ Email }, configration().jwtsecret, {
       expiresIn: '2h',
     });
   }

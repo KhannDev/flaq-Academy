@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
 import { UserAuthGuard } from 'src/common/usegaurds/userauthguard';
@@ -16,6 +16,7 @@ export class CampaignsController {
     return this.campaignservice.CreateCampaign(data);
   }
   /** Create Campaigns  */
+  @UseGuards(UserAuthGuard)
   @Get('/Allcampaigns')
   async GetAllCampaigns() {
     return await this.campaignservice.GetAllCampaigns();
@@ -34,14 +35,22 @@ export class CampaignsController {
   }
 
   /**Get quiz template for a campaign */
-  @Post('/quiz')
-  async GetQuiz() {}
+  @Get('quiz/:id')
+  async GetQuiz(@Param('id') id: string) {
+    console.log(id);
+    const res = await this.campaignservice.GetQuiz(id);
+    return res;
+  }
 
   /**Evaluate a Quiz */
   @Post('/quiz')
   async EvaluateQuiz() {}
 
   /**Participate in a Campaign */
-  @Post('/quiz')
-  async ParticipateCampaign() {}
+  @UseGuards(UserAuthGuard)
+  @Post('/PartipateCampaign')
+  async ParticipateCampaign(@Body() campaignId: CampaignDto, @ReqUser() user) {
+    return this.campaignservice.ParticipateCampaign(campaignId, user);
+    // return await this.campaignservice.
+  }
 }

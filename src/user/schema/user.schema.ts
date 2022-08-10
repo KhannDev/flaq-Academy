@@ -17,7 +17,7 @@ export class User {
   ReferralCode: string;
   @Prop({ type: Number })
   RewardMultiplier: Number;
-  @Prop({ type: Number })
+  @Prop({ type: Number, default: 100 })
   FlaqPoints: Number;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -4,6 +4,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { Model } from 'mongoose';
 import { AddQuiztoCampaignDto, CampaignDto, QuizDto } from './dto/campaign.dto';
 import { Campaign, CampaignDocument } from './schema/campaigns.schema';
+import {
+  ParticipateCampaign,
+  ParticipateCampaignDocument,
+} from './schema/participate.schema';
 import { Quiz, QuizDocument } from './schema/quiz.schema';
 
 @Injectable()
@@ -13,6 +17,8 @@ export class CampaignsService {
     private readonly CampaignModel: Model<CampaignDocument>,
     @InjectModel(Quiz.name)
     private readonly QuizModel: Model<QuizDocument>,
+    @InjectModel(ParticipateCampaign.name)
+    private readonly ParticipateCampaignModel: Model<ParticipateCampaignDocument>,
   ) {}
 
   /**
@@ -66,14 +72,6 @@ export class CampaignsService {
         Quizzes: data.QuizId,
       },
     });
-    // function(err, docs) {
-    //   if (err) {
-    //     console.log(err.message);
-    //     return err.message;
-    //   } else {
-    //     console.log(docs);
-    //     return docs;
-    //   }
   }
 
   /**
@@ -87,9 +85,32 @@ export class CampaignsService {
    * @param Id
    * @returns quiz Id if present in the database or throw an error "Invalid Campaign ID"
    * */
+  async GetQuiz(campaignId) {
+    console.log(campaignId);
+
+    return await this.CampaignModel.find({ _id: campaignId }).populate(
+      'Quizzes',
+    );
+  }
 
   async GetAllCampaigns() {
     const res = await this.CampaignModel.find({});
     return res;
+  }
+
+  /**Participate in a Campaign */
+  async ParticipateCampaign(data, user) {
+    const res: any = await this.CampaignModel.find({ _id: data });
+    /**TODO Check if the user have sufficient flaq points */
+    if (res.RequiredFlaq)
+      if (res) {
+        const dataz = this.ParticipateCampaignModel.create({
+          Campaign: data.Campaign,
+          User: user,
+          // FlaqSpent: res.RequiredFlaq,
+        });
+
+        data.save();
+      }
   }
 }

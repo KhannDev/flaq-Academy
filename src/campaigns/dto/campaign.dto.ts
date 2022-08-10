@@ -81,3 +81,8 @@ export class AddQuiztoCampaignDto {
   @IsString()
   QuizId: string;
 }
+export class CampaignIdDto {
+  @IsString()
+  @ApiProperty()
+  campaignId: string;
+}
