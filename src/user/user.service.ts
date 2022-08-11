@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { HashingService } from 'src/utils/hashing/hashing.service';
@@ -32,5 +32,35 @@ export class UserService {
   findUserwithEmail(email: string) {
     return this.userModel.findOne({ Email: email }).select('+password');
   }
-  async VerifyPassword(Password) {}
+  async ApplyReferal(RefCode, user) {
+    //Checking if the user with the provided Referral code Exists
+    const res = await this.userModel.find({
+      ReferralCode: RefCode.RefferalCode,
+    });
+    if (!res) {
+      throw new HttpException('Invalid Referal Code', HttpStatus.NOT_FOUND);
+    }
+    console.log(res[0]._id);
+    //Updating the users Referral  with the new users Id
+    await this.userModel.findByIdAndUpdate(
+      {
+        _id: res[0]._id,
+      },
+      { $push: { Referrals: user._id } },
+    );
+    //Allowing the new user to be let into the app
+    await this.userModel.findByIdAndUpdate(
+      { _id: user._id },
+      {
+        $set: { IsAllowed: true },
+      },
+    );
+  }
+  async findUser(user) {
+    const res = await this.userModel.findById({ _id: user });
+
+    return res;
+  }
+
+  asy;
 }

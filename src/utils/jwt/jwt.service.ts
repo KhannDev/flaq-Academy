@@ -53,17 +53,20 @@ export class JwtsService {
   /**Validate Access token */
 
   /**Validate Refreshtoken */
-  decoderefreshToken(refreshtokens) {
-    const payload: string | jwt.JwtPayload = jwt.verify(
-      refreshtokens,
-      configration().jwtsecret,
-    );
-    const rubbish = this.getJti(payload);
-
-    /**refresh Access Token */
+  async decodeRefreshToken(refreshtokens: any): Promise<any> {
+    try {
+      const payload: string | jwt.JwtPayload = jwt.verify(
+        refreshtokens,
+        configration().jwtsecret,
+      );
+      console.log(payload);
+      return payload;
+    } catch (e) {
+      throw new HttpException('Invalid RefreshToken', HttpStatus.NOT_FOUND);
+    }
   }
-  async getJti(payload) {
-    const Jti = payload.jti;
-    return Jti;
-  }
+  // async getJti(payload) {
+  //   const Jti = payload.jti;
+  //   return Jti;
+  // }
 }

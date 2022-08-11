@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserCredentialsdto {
   @ApiProperty()
@@ -11,4 +11,13 @@ export class UserCredentialsdto {
   @ApiProperty()
   @IsNotEmpty()
   DeviceToken: string;
+}
+export class UserReferralDto {
+  @ApiProperty()
+  RefferalCode: string;
+}
+export class refreshTokenDto {
+  @ApiProperty()
+  @IsString()
+  RefreshToken: string;
 }

@@ -35,7 +35,6 @@ export class UserAuthGuard implements CanActivate {
       // console.log(news[0]);
       something[news[0]] = news[1];
     }
-    console.log(something);
 
     // console.log(req.headers.cookies);
 
@@ -48,10 +47,9 @@ export class UserAuthGuard implements CanActivate {
     const { 'x-access-token': accessTokenFromHeader } = something;
     // console.log(accessTokenFromHeader);
     if (!accessTokenFromCookie && !accessTokenFromHeader) {
-      console.log(1);
       return false;
     }
-    console.log(accessTokenFromHeader);
+
     try {
       let accessTokenz: string;
       // If the token is from cookie or header
@@ -59,9 +57,8 @@ export class UserAuthGuard implements CanActivate {
       else if (accessTokenFromHeader)
         accessTokenz = String(accessTokenFromHeader);
       const trimed = accessTokenz.replace(';', '');
-      console.log(trimed);
+
       const useremail = await this.jwt.decodeAccessToken(trimed);
-      console.log(useremail);
 
       const user = await this.auth.findUserwithEmail(useremail);
       if (!user)

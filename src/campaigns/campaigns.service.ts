@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { Model } from 'mongoose';
@@ -100,17 +100,22 @@ export class CampaignsService {
 
   /**Participate in a Campaign */
   async ParticipateCampaign(data, user) {
-    const res: any = await this.CampaignModel.find({ _id: data });
+    const res = await this.CampaignModel.find({ _id: data.campaignId });
     /**TODO Check if the user have sufficient flaq points */
-    if (res.RequiredFlaq)
-      if (res) {
-        const dataz = this.ParticipateCampaignModel.create({
-          Campaign: data.Campaign,
-          User: user,
-          // FlaqSpent: res.RequiredFlaq,
-        });
 
-        data.save();
-      }
+    if (res[0].RequiredFlaq > user.FlaqPoints) {
+      throw new HttpException('Low Flaq points', HttpStatus.FORBIDDEN);
+    }
+
+    if (res) {
+      const dataz = await this.ParticipateCampaignModel.create({
+        Campaign: data.CampaignId,
+        User: user._id,
+        FlaqSpent: res[0].RequiredFlaq,
+      });
+
+      return dataz.save();
+    }
+    return 'Creation Failed';
   }
 }

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -6,7 +7,7 @@ export type UserDocument = User & Document;
 export class User {
   @Prop({ type: String, unique: true })
   Email: string;
-  @Prop({ type: Boolean, default: true })
+  @Prop({ type: Boolean, default: false })
   IsAllowed: Boolean;
   @Prop({ String })
   DeviceToken: string;
@@ -15,6 +16,8 @@ export class User {
   /**Assign every user with a unique Referral code */
   @Prop({ type: String })
   ReferralCode: string;
+  @Prop({ type: [{ type: Types.ObjectId, ref: User.name }] })
+  Referrals: string[];
   @Prop({ type: Number })
   RewardMultiplier: Number;
   @Prop({ type: Number, default: 100 })

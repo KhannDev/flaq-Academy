@@ -3,7 +3,12 @@ import { ApiTags } from '@nestjs/swagger';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
 import { UserAuthGuard } from 'src/common/usegaurds/userauthguard';
 import { CampaignsService } from './campaigns.service';
-import { AddQuiztoCampaignDto, CampaignDto, QuizDto } from './dto/campaign.dto';
+import {
+  AddQuiztoCampaignDto,
+  CampaignDto,
+  CampaignIdDto,
+  QuizDto,
+} from './dto/campaign.dto';
 
 @ApiTags('Campaigns')
 @Controller('campaigns')
@@ -49,7 +54,10 @@ export class CampaignsController {
   /**Participate in a Campaign */
   @UseGuards(UserAuthGuard)
   @Post('/PartipateCampaign')
-  async ParticipateCampaign(@Body() campaignId: CampaignDto, @ReqUser() user) {
+  async ParticipateCampaign(
+    @Body() campaignId: CampaignIdDto,
+    @ReqUser() user,
+  ) {
     return this.campaignservice.ParticipateCampaign(campaignId, user);
     // return await this.campaignservice.
   }
