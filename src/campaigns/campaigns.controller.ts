@@ -7,6 +7,7 @@ import {
   AddQuiztoCampaignDto,
   CampaignDto,
   CampaignIdDto,
+  EvaluateQuizDto,
   QuizDto,
 } from './dto/campaign.dto';
 
@@ -48,8 +49,12 @@ export class CampaignsController {
   }
 
   /**Evaluate a Quiz */
-  @Post('/quiz')
-  async EvaluateQuiz() {}
+
+  @UseGuards(UserAuthGuard)
+  @Post('/Evaluatequiz')
+  async EvaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
+    return this.campaignservice.evaluateQuiz(data, user);
+  }
 
   /**Participate in a Campaign */
   @UseGuards(UserAuthGuard)

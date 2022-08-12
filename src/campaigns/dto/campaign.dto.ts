@@ -86,3 +86,14 @@ export class CampaignIdDto {
   @ApiProperty()
   campaignId: string;
 }
+
+export class EvaluateQuizDto {
+  @ApiProperty()
+  Answers: string[];
+  @ApiProperty()
+  campaignPartipationId: string;
+  @ApiProperty()
+  campaignId: string;
+  @ApiProperty()
+  quizTemplateId: string;
+}

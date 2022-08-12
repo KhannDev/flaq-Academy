@@ -16,6 +16,7 @@ import {
   ParticipateCampaignSchema,
 } from './schema/participate.schema';
 import { Quiz, QuizSchema } from './schema/quiz.schema';
+import { QuizEntries, QuizEntriesSchema } from './schema/quiz_entries.schema';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Quiz, QuizSchema } from './schema/quiz.schema';
       { name: Quiz.name, schema: QuizSchema },
       { name: ParticipateCampaign.name, schema: ParticipateCampaignSchema },
       { name: RefreshToken.name, schema: RefreshTokenSchema },
+      { name: QuizEntries.name, schema: QuizEntriesSchema },
     ]),
     UserModule,
   ],

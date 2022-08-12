@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { Articles, Questions, QuizDto, Quizzes } from '../dto/campaign.dto';
+import { Campaign } from './campaigns.schema';
 
 export type QuizDocument = Quiz & Document;
 
