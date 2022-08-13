@@ -20,45 +20,39 @@ export class UserAuthGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
-    // console.log(req.cookies);
-    // console.log(req.headers);
+
     // console.log({ cookies: req.cookies, headers: req.headers });
 
     let data = [];
     data.push(req.headers.cookie);
 
-    const newss = data[0].split(' ');
+    const dataInString = data[0].split(' ');
 
-    let something: any = {};
-    for (let n of newss) {
+    let headers: any = {};
+    for (let n of dataInString) {
       const news = n.split('=');
-      // console.log(news[0]);
-      something[news[0]] = news[1];
+      headers[news[0]] = news[1];
     }
-
-    // console.log(req.headers.cookies);
-
-    // console.log(isPublic);
     if (!req.cookies) req.cookies = {};
     if (!req.headers) req.headers = {};
 
     const { 'x-access-token': accessTokenFromCookie } = req.cookies;
-    // Headers doesn't recognise uppercase characters
-    const { 'x-access-token': accessTokenFromHeader } = something;
+
+    const { 'x-access-token': accessTokenFromHeader } = headers;
     // console.log(accessTokenFromHeader);
     if (!accessTokenFromCookie && !accessTokenFromHeader) {
       return false;
     }
 
     try {
-      let accessTokenz: string;
+      let accessToken: string;
       // If the token is from cookie or header
-      if (accessTokenFromCookie) accessTokenz = accessTokenFromCookie;
+      if (accessTokenFromCookie) accessToken = accessTokenFromCookie;
       else if (accessTokenFromHeader)
-        accessTokenz = String(accessTokenFromHeader);
-      const trimed = accessTokenz.replace(';', '');
+        accessToken = String(accessTokenFromHeader);
+      const trimedaccessToken = accessToken.replace(';', '');
 
-      const useremail = await this.jwt.decodeAccessToken(trimed);
+      const useremail = await this.jwt.decodeAccessToken(trimedaccessToken);
 
       const user = await this.auth.findUserwithEmail(useremail);
       if (!user)

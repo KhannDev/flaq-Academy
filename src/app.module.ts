@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import configration from './common/configration';
 import { JwtsService } from './utils/jwt/jwt.service';
 import { CampaignsModule } from './campaigns/campaigns.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CampaignsModule } from './campaigns/campaigns.module';
     AuthModule,
     UserModule,
     CampaignsModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtsService],

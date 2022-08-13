@@ -18,29 +18,23 @@ const user = { _id: '62ebbe803152947ce40b0092' };
 export class JwtsService {
   constructor(private readonly AuthService: AuthService) {}
 
-  async generateRefreshToken(Id) {
-    return jwt.sign({ Id }, configration().jwtsecret, {
-      expiresIn: '4s',
-      jwtid: 'sdkfjds',
-    });
-  }
-  async decodeAccessToken(token) {
-    const tokenz: any = jwt.verify(token, configration().jwtsecret);
-    console.log('Tokenz', tokenz);
-    if (tokenz) {
-      return tokenz.Email;
-    } else {
-      throw new HttpException('Invalid Access Token', HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  /**Get Access and refresh token */
+  /**Create Access  */
   async CreateAccesstoken(Email) {
     return jwt.sign({ Email }, configration().jwtsecret, {
       expiresIn: '2h',
     });
   }
-
+  // validate Access token
+  async decodeAccessToken(token: string) {
+    const data: any = jwt.verify(token, configration().jwtsecret);
+    // console.log('Tokenz', tokenz);
+    if (data) {
+      return data.Email;
+    } else {
+      throw new HttpException('Invalid Access Token', HttpStatus.UNAUTHORIZED);
+    }
+  }
+  /** Create refresh token */
   async CreateRefreshToken(user) {
     const { _id, userId } = user;
     const token = jwt.sign({ userId }, configration().jwtsecret, {
@@ -59,14 +53,10 @@ export class JwtsService {
         refreshtokens,
         configration().jwtsecret,
       );
-      console.log(payload);
+      // console.log(payload);
       return payload;
     } catch (e) {
       throw new HttpException('Invalid RefreshToken', HttpStatus.NOT_FOUND);
     }
   }
-  // async getJti(payload) {
-  //   const Jti = payload.jti;
-  //   return Jti;
-  // }
 }

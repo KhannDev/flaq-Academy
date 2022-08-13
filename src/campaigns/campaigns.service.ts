@@ -105,13 +105,14 @@ export class CampaignsService {
       }
 
       if (res) {
-        const dataz = await this.ParticipateCampaignModel.create({
-          Campaign: data.CampaignId,
-          User: user._id,
-          FlaqSpent: res[0].RequiredFlaq,
-        });
+        const ParticipateCampaigndata =
+          await this.ParticipateCampaignModel.create({
+            Campaign: data.CampaignId,
+            User: user._id,
+            FlaqSpent: res[0].RequiredFlaq,
+          });
 
-        return dataz.save();
+        return ParticipateCampaigndata.save();
       }
     } catch (e) {
       return e;
@@ -128,6 +129,7 @@ export class CampaignsService {
     if (Quizzes.length !== Answers.length)
       throw new HttpException('request body Invalid', HttpStatus.BAD_REQUEST);
     let CorrectCount = 0;
+
     for (let i = 0; i < Answers.length; i++) {
       if (Quizzes[i].Questions.AnswerIndex == Answers[i]) {
         CorrectCount += 1;
@@ -152,7 +154,5 @@ export class CampaignsService {
       { $set: { isComplete: true } },
     );
     return quiz_entriesData;
-    //TODO create the Quiz Entries
-    //TODO Update the Campaign participation, if Ispassing==true
   }
 }
