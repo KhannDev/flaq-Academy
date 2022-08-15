@@ -28,7 +28,7 @@ export class UserService {
     });
     return user;
   }
-  async UpdateDeviceToken() {}
+  // async UpdateDeviceToken() {}
   findUserwithEmail(email: string) {
     return this.userModel.findOne({ Email: email }).select('+password');
   }
@@ -58,9 +58,6 @@ export class UserService {
   }
   async findUser(user) {
     const res = await this.userModel.findById({ _id: user });
-
     return res;
   }
-
-  asy;
 }

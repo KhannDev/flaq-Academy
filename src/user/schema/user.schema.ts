@@ -8,7 +8,7 @@ export class User {
   @Prop({ type: String, unique: true })
   Email: string;
   @Prop({ type: Boolean, default: false })
-  IsAllowed: Boolean;
+  IsAllowed: boolean;
   @Prop({ String })
   DeviceToken: string;
   @Prop({ type: String })
@@ -19,8 +19,8 @@ export class User {
   @Prop({ type: [{ type: Types.ObjectId, ref: User.name }] })
   Referrals: string[];
   @Prop({ type: Number })
-  RewardMultiplier: Number;
+  RewardMultiplier: number;
   @Prop({ type: Number, default: 100 })
-  FlaqPoints: Number;
+  FlaqPoints: number;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

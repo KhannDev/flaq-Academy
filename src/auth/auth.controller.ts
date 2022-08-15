@@ -12,7 +12,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
-import { UserAuthGuard } from 'src/common/usegaurds/userauthguard';
+import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
 import { refreshTokenDto, UserCredentialsdto } from 'src/user/dto/user.dto';
 import { UserService } from 'src/user/user.service';
 import { HashingService } from 'src/utils/hashing/hashing.service';
@@ -33,7 +33,7 @@ export class AuthController {
     summary: 'User Sign up',
   })
   @Post('signup')
-  async signup(
+  async signUp(
     @Body() data: UserCredentialsdto,
     @Res({ passthrough: true }) response: Response,
   ) {
@@ -70,7 +70,7 @@ export class AuthController {
   /**Login in  */
   @ApiOperation({ summary: 'Login In user' })
   @Post('/login')
-  async Login(
+  async login(
     @Body() data: UserCredentialsdto,
     @Res({ passthrough: true }) response: Response,
   ) {
@@ -109,7 +109,7 @@ export class AuthController {
   }
 
   @Post('/RefreshAccessToken')
-  async IssueNewAccessToken(
+  async issueNewAccessToken(
     @Body() datas: refreshTokenDto,
     @Res({ passthrough: true }) response: Response,
   ) {

@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
-import { UserAuthGuard } from 'src/common/usegaurds/userauthguard';
+import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
 import { UserCredentialsdto, UserReferralDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
@@ -11,7 +11,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'create new user' })
   @Post()
-  CreateUser(@Body() data: UserCredentialsdto) {
+  createUser(@Body() data: UserCredentialsdto) {
     return this.userservice.CreateUser(data);
   }
 
@@ -20,12 +20,12 @@ export class UserController {
   /**Apply  User Referral */
   @UseGuards(UserAuthGuard)
   @Post('/UserReferral')
-  async UserReferral(@Body() code: UserReferralDto, @ReqUser() user) {
+  async userReferral(@Body() code: UserReferralDto, @ReqUser() user) {
     return await this.userservice.ApplyReferal(code, user);
   }
   @UseGuards(UserAuthGuard)
   @Post('Userdetails')
-  async UserDetail(@ReqUser() user) {
+  async userDetail(@ReqUser() user) {
     return this.userservice.findUser(user._id);
   }
 }

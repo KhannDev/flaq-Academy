@@ -9,11 +9,11 @@ export class NewsController {
   constructor(private readonly newsservice: NewsService) {}
 
   @Post('Create')
-  async CreateNews(@Body() data: NewsDto) {
+  async createNews(@Body() data: NewsDto) {
     return await this.newsservice.CreateNews(data);
   }
   @Get('Create')
-  async GetNews() {
+  async getNews() {
     return await this.newsservice.GetNews();
   }
 }
