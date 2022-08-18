@@ -9,16 +9,16 @@ export class NewsService {
     @InjectModel(News.name) private readonly NewsModel: Model<NewsDocument>,
   ) {}
 
-  async CreateNews(data) {
-    const { Title, Description, Image } = data;
+  async createNews(data) {
+    const { title, description, image } = data;
     return await this.NewsModel.create({
-      Title,
-      Description,
-      Image,
+      title,
+      description,
+      image,
     });
   }
 
-  async GetNews() {
+  async getNews() {
     return this.NewsModel.find().sort({ createdAt: -1 });
   }
 }

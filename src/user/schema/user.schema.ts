@@ -6,21 +6,21 @@ export type UserDocument = User & Document;
 @Schema({ timestamps: true, collection: 'Users' })
 export class User {
   @Prop({ type: String, unique: true })
-  Email: string;
+  email: string;
   @Prop({ type: Boolean, default: false })
-  IsAllowed: boolean;
+  isAllowed: boolean;
   @Prop({ String })
-  DeviceToken: string;
+  deviceToken: string;
   @Prop({ type: String })
-  Password: string;
+  password: string;
   /**Assign every user with a unique Referral code */
   @Prop({ type: String })
-  ReferralCode: string;
+  referralCode: string;
   @Prop({ type: [{ type: Types.ObjectId, ref: User.name }] })
-  Referrals: string[];
+  referrals: string[];
   @Prop({ type: Number })
-  RewardMultiplier: number;
+  rewardMultiplier: number;
   @Prop({ type: Number, default: 100 })
-  FlaqPoints: number;
+  flaqPoints: number;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

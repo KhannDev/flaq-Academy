@@ -34,22 +34,22 @@ export class CampaignsService {
    * @params Campaigndto
    * @returns Newly created Campaign object
    * */
-  async CreateCampaign(data: CampaignDto) {
+  async createCampaign(data: CampaignDto) {
     await this.CampaignModel.create({
-      Description: data.Description,
-      Title: data.Title,
-      Articles: data.Articles,
-      TickerName: data.TickerName,
-      TickerImageUrl: data.TickerImageUrl,
-      TaskType: data.TaskType,
-      YTVideoUrl: data.YtVideoUrl,
-      Image: data.Image,
-      RequiredFlaq: data.RequiredFlaq,
-      FlaqReward: data.FlaqReward,
-      AirDropUser: data.AirDropUser,
-      TotalAirDrop: data.TotalAirDrop,
-      CurrentAirDrop: data.CurrentAirDrop,
-      Quizzes: data.Quizzes,
+      description: data.description,
+      title: data.title,
+      articles: data.articles,
+      tickerName: data.tickerName,
+      tickerImageUrl: data.tickerImageUrl,
+      taskType: data.taskType,
+      yTVideoUrl: data.ytVideoUrl,
+      image: data.image,
+      requiredFlaq: data.requiredFlaq,
+      flaqReward: data.flaqReward,
+      airDropUser: data.airDropUser,
+      totalAirDrop: data.totalAirDrop,
+      currentAirDrop: data.currentAirDrop,
+      quizzes: data.quizzes,
     });
   }
 
@@ -58,11 +58,11 @@ export class CampaignsService {
    * @params Quizdto
    * @returns Newly created Quiz object
    * */
-  async CreateQuiz(data: QuizDto) {
+  async createQuiz(data: QuizDto) {
     try {
       await this.QuizModel.create({
-        Title: data.Title,
-        Questions: data.Questions,
+        title: data.title,
+        questions: data.questions,
       });
     } catch (e) {
       console.log(e.message);
@@ -74,85 +74,91 @@ export class CampaignsService {
    * @params Campaign and quiz Ids
    * @returns Apeended Campaign Object
    * */
-  async AddQuiztoCampaign(data: AddQuiztoCampaignDto) {
-    return await this.CampaignModel.findByIdAndUpdate(data.CampaignId, {
+  async addQuiztoCampaign(data: AddQuiztoCampaignDto) {
+    return await this.CampaignModel.findByIdAndUpdate(data.campaignId, {
       $set: {
-        Quizzes: data.QuizId,
+        Quizzes: data.quizId,
       },
     });
   }
 
-  async GetQuiz(campaignId) {
+  async getQuiz(campaignId) {
     console.log(campaignId);
 
-    return await this.CampaignModel.find({ _id: campaignId }).populate(
-      'Quizzes',
+    return await this.CampaignModel.findOne({ _id: campaignId }).populate(
+      'quizzes',
     );
   }
 
-  async GetAllCampaigns() {
+  async getAllCampaigns() {
     const res = await this.CampaignModel.find({});
     return res;
   }
 
   /**Participate in a Campaign */
-  async ParticipateCampaign(data, user) {
+  async participateCampaign(data, user) {
     try {
-      const res = await this.CampaignModel.find({ _id: data.campaignId });
+      const res = await this.CampaignModel.findById({ _id: data.campaignId });
 
-      if (res[0].RequiredFlaq > user.FlaqPoints) {
+      if (res.requiredFlaq > user.FlaqPoints) {
         throw new HttpException('Low Flaq points', HttpStatus.FORBIDDEN);
       }
 
       if (res) {
         const ParticipateCampaigndata =
           await this.ParticipateCampaignModel.create({
-            Campaign: data.CampaignId,
-            User: user._id,
-            FlaqSpent: res[0].RequiredFlaq,
+            campaign: data.campaignId,
+            user: user._id,
+            flaqSpent: res.requiredFlaq,
           });
 
         return ParticipateCampaigndata.save();
       }
     } catch (e) {
-      return e;
+      return new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   async evaluateQuiz(data: EvaluateQuizDto, user) {
-    const { Answers, campaignId, campaignPartipationId, quizTemplateId } = data;
-    const campaign = await this.CampaignModel.find({
+    const { answers, campaignId, campaignPartipationId, quizTemplateId } = data;
+    const campaign = await this.CampaignModel.findOne({
       _id: campaignId,
     }).populate('Quizzes');
-    const Quizzes: any = campaign[0].Quizzes;
+    const quizzes: any = campaign[0].quizzes;
 
-    if (Quizzes.length !== Answers.length)
-      throw new HttpException('request body Invalid', HttpStatus.BAD_REQUEST);
-    let CorrectCount = 0;
+    // if (Quizzes.length !== Answers.length)
+    //   throw new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
+    let correctCount = 0;
 
-    for (let i = 0; i < Answers.length; i++) {
-      if (Quizzes[i].Questions.AnswerIndex == Answers[i]) {
-        CorrectCount += 1;
+    for (let i = 0; i < answers.length; i++) {
+      if (quizzes[i].questions.answerIndex == answers[i]) {
+        correctCount += 1;
       }
     }
 
-    const QuestionsCount = Quizzes.length;
-    let IsPassing = false;
-    if ((CorrectCount / QuestionsCount) * 100 >= 80) {
-      IsPassing = true;
+    const questionsCount = quizzes.length;
+    let isPassing = false;
+    if ((correctCount / questionsCount) * 100 >= 80) {
+      isPassing = true;
     }
     const quiz_entriesData = await this.QuizEntriesModel.create({
-      User: user._id,
-      Campaign: campaign[0]._id,
-      Quiz: quizTemplateId,
-      QuestionsCount,
-      CorrectCount,
-      IsPassing,
+      user: user._id,
+      campaign: campaign[0]._id,
+      quiz: quizTemplateId,
+      questionsCount,
+      correctCount,
+      isPassing,
     });
-    await this.ParticipateCampaignModel.find(
-      { _id: campaignPartipationId },
-      { $set: { isComplete: true } },
-    );
+    //Updating the campaign participation with isComplete True
+    if (quiz_entriesData) {
+      await this.ParticipateCampaignModel.find(
+        { _id: campaignPartipationId },
+        { $set: { isComplete: true } },
+      );
+    }
     return quiz_entriesData;
   }
 }

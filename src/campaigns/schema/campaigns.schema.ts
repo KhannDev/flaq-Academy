@@ -8,33 +8,33 @@ export type CampaignDocument = Campaign & Document;
 @Schema({ timestamps: true, collection: 'Campaigns' })
 export class Campaign {
   @Prop({ type: String })
-  Description: string;
+  description: string;
   @Prop({ type: String })
-  Title: string;
+  title: string;
   @Prop({ type: String })
-  TickerName: string;
+  tickerName: string;
   @Prop({ type: String })
-  TickerImageUrl: string;
+  tickerImageUrl: string;
   /**Assign every user with a unique Referral code */
   @Prop({ type: String })
-  TaskType: string;
+  taskType: string;
   @Prop({ type: String })
-  YTVideoUrl: string;
+  yTVideoUrl: string;
   @Prop({ type: String })
-  Image: string;
+  image: string;
   @Prop({ type: Number })
-  RequiredFlaq: number;
+  requiredFlaq: number;
   @Prop({ type: Number })
-  FlaqReward: number;
+  flaqReward: number;
   @Prop({ type: Number })
-  AirDropUser: number;
+  airDropUser: number;
   @Prop({ type: Number })
-  TotalAirDrop: number;
+  totalAirDrop: number;
   @Prop({ type: Number })
-  CurrentAirDrop: number;
+  currentAirDrop: number;
   @Prop({ type: Articles })
-  Articles: [] | string;
+  articles: [] | string;
   @Prop({ type: [{ type: Types.ObjectId, ref: Quiz.name }] })
-  Quizzes: string[];
+  quizzes: string[];
 }
 export const CampaignSchema = SchemaFactory.createForClass(Campaign);

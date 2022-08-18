@@ -3,93 +3,89 @@ import { isNotEmpty, IsNotEmpty, isString, IsString } from 'class-validator';
 
 export class Articles {
   @ApiProperty()
-  Url: string;
+  url: string;
   @ApiProperty()
-  Title: string;
+  title: string;
   @ApiProperty()
-  IconUrl: string;
+  iconUrl: string;
 }
 export class Quizzes {
-  Ids: [];
+  ids: [];
 }
 export class CampaignDto {
   @ApiProperty()
   @IsString()
-  Description: string;
+  description: string;
   @ApiProperty()
   @IsString()
-  Title: string;
+  title: string;
   @ApiProperty()
   @IsString()
-  TickerName: string;
+  tickerName: string;
   @ApiProperty()
   @IsString()
-  TickerImageUrl: string;
+  tickerImageUrl: string;
   @ApiProperty()
   @IsString()
-  TaskType: string;
+  taskType: string;
   @ApiProperty()
   @IsString()
-  YtVideoUrl: string;
+  ytVideoUrl: string;
   @ApiProperty()
   @IsString()
-  Image: string;
+  image: string;
   @ApiProperty()
   @IsNotEmpty()
-  RequiredFlaq: Number;
+  requiredFlaq: number;
   @ApiProperty()
   @IsNotEmpty()
-  FlaqReward: Number;
+  flaqReward: number;
   @ApiProperty()
   @IsNotEmpty()
-  AirDropUser: Number;
+  airDropUser: number;
   @ApiProperty()
   @IsNotEmpty()
-  TotalAirDrop: Number;
+  totalAirDrop: number;
   @ApiProperty()
   @IsNotEmpty()
-  CurrentAirDrop: Number;
+  currentAirDrop: number;
   @ApiProperty()
-  Articles: Articles[];
+  articles: Articles[];
   @ApiProperty()
   @IsNotEmpty()
-  Quizzes: string[];
+  quizzes: string[];
 }
 export class Questions {
-  @ApiProperty()
-  Question: string;
-  @ApiProperty()
-  Description: string;
-  @ApiProperty()
-  AnswerIndex: Number;
-  @ApiProperty()
-  Options: string[];
+  @IsString()
+  question: string;
+  @IsString()
+  description: string;
+
+  answerIndex: number;
+
+  options: string[];
 }
 export class QuizDto {
-  @ApiProperty()
   @IsString()
-  Title: string;
-  @ApiProperty()
+  title: string;
+
   @IsNotEmpty()
-  Questions: Questions;
+  questions: Questions;
 }
 export class AddQuiztoCampaignDto {
-  @ApiProperty()
   @IsString()
-  CampaignId: string;
-  @ApiProperty()
+  campaignId: string;
+
   @IsString()
-  QuizId: string;
+  quizId: string;
 }
 export class CampaignIdDto {
   @IsString()
-  @ApiProperty()
   campaignId: string;
 }
 
 export class EvaluateQuizDto {
-  @ApiProperty()
-  Answers: string[];
+  answers: string[];
   @ApiProperty()
   campaignPartipationId: string;
   @ApiProperty()

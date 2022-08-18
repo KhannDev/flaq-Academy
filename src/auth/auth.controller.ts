@@ -13,7 +13,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
 import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
-import { refreshTokenDto, UserCredentialsdto } from 'src/user/dto/user.dto';
+import { RefreshTokenDto, UserCredentialsDto } from 'src/user/dto/user.dto';
 import { UserService } from 'src/user/user.service';
 import { HashingService } from 'src/utils/hashing/hashing.service';
 import { JwtsService } from 'src/utils/jwt/jwt.service';
@@ -32,19 +32,19 @@ export class AuthController {
   @ApiOperation({
     summary: 'User Sign up',
   })
-  @Post('signup')
+  @Post('/signup')
   async signUp(
-    @Body() data: UserCredentialsdto,
+    @Body() data: UserCredentialsDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log(data.Email);
-    const user = await this.userservice.findUserwithEmail(data.Email);
+    console.log(data.email);
+    const user = await this.userservice.findUserwithEmail(data.email);
 
     if (!user) {
-      const newUser = await this.authservice.CreateUser(data);
+      const newUser = await this.authservice.createUser(data);
       console.log(newUser);
       //Generate Access token for the user
-      const accessToken = await this.jwt.CreateAccesstoken(newUser.Email);
+      const accessToken = await this.jwt.createAccesstoken(newUser.email);
       console.log(accessToken);
       response.cookie('x-access-token', accessToken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -52,10 +52,10 @@ export class AuthController {
         secure: false,
       });
       //Generate Refresh token for the user
-      const refreshtokendata = await this.authservice.CreateRefreshToken(
+      const refreshtokendata = await this.authservice.createRefreshToken(
         newUser,
       );
-      const refreshtoken = await this.jwt.CreateRefreshToken(refreshtokendata);
+      const refreshtoken = await this.jwt.createRefreshToken(refreshtokendata);
       response.cookie('x-refresh-token', refreshtoken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
@@ -64,21 +64,21 @@ export class AuthController {
       return { accessToken, refreshtoken };
       /** Response to store access and refresh token in cookies */
     } else {
-      throw new HttpException('User already Exists', HttpStatus.CONFLICT);
+      throw new HttpException('User already Exists', HttpStatus.FORBIDDEN);
     }
   }
   /**Login in  */
   @ApiOperation({ summary: 'Login In user' })
   @Post('/login')
   async login(
-    @Body() data: UserCredentialsdto,
+    @Body() data: UserCredentialsDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const userz = await this.userservice.findUserwithEmail(data.Email);
+    const userz = await this.userservice.findUserwithEmail(data.email);
     if (userz) {
       const matchPassword = await this.hashingservice.compare(
-        userz.Password,
-        data.Password,
+        userz.password,
+        data.password,
       );
 
       if (!matchPassword) {
@@ -87,14 +87,14 @@ export class AuthController {
           HttpStatus.UNAUTHORIZED,
         );
       }
-      const accessToken = await this.jwt.CreateAccesstoken(userz.Email);
+      const accessToken = await this.jwt.createAccesstoken(userz.email);
       response.cookie('x-access-token', accessToken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: false,
         secure: false,
       });
-      const refreshtokendata = await this.authservice.CreateRefreshToken(userz);
-      const refreshtoken = await this.jwt.CreateRefreshToken(refreshtokendata);
+      const refreshtokendata = await this.authservice.createRefreshToken(userz);
+      const refreshtoken = await this.jwt.createRefreshToken(refreshtokendata);
       response.cookie('x-refresh-token', refreshtoken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
@@ -110,19 +110,19 @@ export class AuthController {
 
   @Post('/RefreshAccessToken')
   async issueNewAccessToken(
-    @Body() datas: refreshTokenDto,
+    @Body() datas: RefreshTokenDto,
     @Res({ passthrough: true }) response: Response,
   ) {
     try {
       // console.log(RefreshToken);
-      const data = await this.jwt.decodeRefreshToken(datas.RefreshToken);
+      const data = await this.jwt.decodeRefreshToken(datas.refreshToken);
       console.log(data);
       if (!data) {
         throw new HttpException('Invalid RefreshToken', HttpStatus.NOT_FOUND);
       }
-      const { Email } = await this.userservice.findUser(data.userId);
-      console.log(Email);
-      const accessToken = await this.jwt.CreateAccesstoken(Email);
+      const { email } = await this.userservice.findUser(data.userId);
+
+      const accessToken = await this.jwt.createAccesstoken(email);
       response.cookie('x-access-token', accessToken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: false,

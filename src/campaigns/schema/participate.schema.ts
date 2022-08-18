@@ -11,11 +11,11 @@ export class ParticipateCampaign {
   @Prop({ type: Boolean, default: false })
   isComplete: boolean;
   @Prop({ type: Number })
-  FlaqSpent: Number;
+  flaqSpent: number;
   @Prop({ type: Types.ObjectId, ref: Campaign.name })
-  Campaign: string;
+  campaign: string;
   @Prop({ type: Types.ObjectId, ref: User.name })
-  User: string;
+  user: string;
 }
 export const ParticipateCampaignSchema =
   SchemaFactory.createForClass(ParticipateCampaign);

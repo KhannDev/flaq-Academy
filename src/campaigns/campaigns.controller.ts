@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
-import { UserAuthGuard } from 'src/common/usegaurds/userauthguard';
+import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
 import { CampaignsService } from './campaigns.service';
 import {
   AddQuiztoCampaignDto,
@@ -17,53 +17,53 @@ export class CampaignsController {
   constructor(private readonly campaignservice: CampaignsService) {}
   // @UseGuards(UserAuthGuard)
 
-  @Post('/CreateCampaign')
-  async CreateCampaigns(@Body() data: CampaignDto) {
-    return this.campaignservice.CreateCampaign(data);
+  @Post('/createCampaign')
+  async createCampaigns(@Body() data: CampaignDto) {
+    return this.campaignservice.createCampaign(data);
   }
   /** Create Campaigns  */
-  @UseGuards(UserAuthGuard)
-  @Get('/Allcampaigns')
-  async GetAllCampaigns() {
-    return await this.campaignservice.GetAllCampaigns();
+  // @UseGuards(UserAuthGuard)
+  @Get('/allCampaigns')
+  async getAllCampaigns() {
+    return await this.campaignservice.getAllCampaigns();
   }
 
   /** Create Quiz Template  */
   @Post('/quiz/template')
-  async CreateQuiz(@Body() data: QuizDto) {
-    return this.campaignservice.CreateQuiz(data);
+  async createQuiz(@Body() data: QuizDto) {
+    return this.campaignservice.createQuiz(data);
   }
 
   /**Adding Quiz to the campaign */
-  @Post('/AddQuiztoCampaign')
-  async AddQuiztoCampaign(@Body() data: AddQuiztoCampaignDto) {
-    return this.campaignservice.AddQuiztoCampaign(data);
+  @Post('/addQuiztoCampaign')
+  async addQuiztoCampaign(@Body() data: AddQuiztoCampaignDto) {
+    return this.campaignservice.addQuiztoCampaign(data);
   }
 
   /**Get quiz template for a campaign */
   @Get('quiz/:id')
-  async GetQuiz(@Param('id') id: string) {
+  async getQuiz(@Param('id') id: string) {
     console.log(id);
-    const res = await this.campaignservice.GetQuiz(id);
+    const res = await this.campaignservice.getQuiz(id);
     return res;
   }
 
   /**Evaluate a Quiz */
 
   @UseGuards(UserAuthGuard)
-  @Post('/Evaluatequiz')
-  async EvaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
+  @Post('/evaluateQuiz')
+  async evaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
     return this.campaignservice.evaluateQuiz(data, user);
   }
 
   /**Participate in a Campaign */
   @UseGuards(UserAuthGuard)
-  @Post('/PartipateCampaign')
-  async ParticipateCampaign(
+  @Post('/partipateCampaign')
+  async participateCampaign(
     @Body() campaignId: CampaignIdDto,
     @ReqUser() user,
   ) {
-    return this.campaignservice.ParticipateCampaign(campaignId, user);
+    return this.campaignservice.participateCampaign(campaignId, user);
     // return await this.campaignservice.
   }
 }

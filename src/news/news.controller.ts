@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { NewsDto } from './dto/news.dto';
 import { NewsService } from './news.service';
@@ -8,12 +8,12 @@ import { NewsService } from './news.service';
 export class NewsController {
   constructor(private readonly newsservice: NewsService) {}
 
-  @Post('Create')
+  @Post('/create')
   async createNews(@Body() data: NewsDto) {
-    return await this.newsservice.CreateNews(data);
+    return await this.newsservice.createNews(data);
   }
-  @Get('Create')
+  @Get('/getNews')
   async getNews() {
-    return await this.newsservice.GetNews();
+    return await this.newsservice.getNews();
   }
 }

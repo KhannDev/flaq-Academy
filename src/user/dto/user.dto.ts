@@ -1,23 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-export class UserCredentialsdto {
-  @ApiProperty()
+export class UserCredentialsDto {
   @IsEmail()
-  Email: string;
-  @ApiProperty()
+  email: string;
+
   @IsNotEmpty()
-  Password: string;
-  @ApiProperty()
+  password: string;
+
   @IsNotEmpty()
-  DeviceToken: string;
+  deviceToken: string;
 }
 export class UserReferralDto {
-  @ApiProperty()
-  RefferalCode: string;
+  refferalCode: string;
 }
-export class refreshTokenDto {
-  @ApiProperty()
+export class RefreshTokenDto {
   @IsString()
-  RefreshToken: string;
+  refreshToken: string;
 }
