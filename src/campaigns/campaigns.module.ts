@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthService } from 'src/auth/auth.service';
-import { UserModule } from 'src/user/user.module';
-import { UserService } from 'src/user/user.service';
-import { JwtsService } from 'src/utils/jwt/jwt.service';
+import { AuthService } from '../auth/auth.service';
+import { UserModule } from '../user/user.module';
+import { JwtsService } from '../utils/jwt/jwt.service';
 import {
   RefreshToken,
   RefreshTokenSchema,
-} from 'src/utils/jwt/schema/Refreshtoken';
+} from '../utils/jwt/schema/Refreshtoken';
 import { CampaignsController } from './campaigns.controller';
 import { CampaignsService } from './campaigns.service';
 import { Campaign, CampaignSchema } from './schema/campaigns.schema';

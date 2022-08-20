@@ -9,15 +9,16 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { ReqUser } from 'src/common/decorators/req-user.decorator';
-import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
+
 import { RefreshTokenDto, UserCredentialsDto } from 'src/user/dto/user.dto';
-import { UserService } from 'src/user/user.service';
-import { HashingService } from 'src/utils/hashing/hashing.service';
-import { JwtsService } from 'src/utils/jwt/jwt.service';
+import { UserService } from '../user/user.service';
+import { HashingService } from '../utils/hashing/hashing.service';
+import { JwtsService } from '../utils/jwt/jwt.service';
 import { AuthService } from './auth.service';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {

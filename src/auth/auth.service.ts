@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RefreshTokenDto, UserCredentialsDto } from 'src/user/dto/user.dto';
-import { UserService } from 'src/user/user.service';
-import { RefreshToken } from 'src/utils/jwt/schema/Refreshtoken';
+import { UserCredentialsDto } from '../user/dto/user.dto';
+import { UserService } from '../user/user.service';
+import { RefreshToken } from '../utils/jwt/schema/Refreshtoken';
 
 @Injectable()
 export class AuthService {

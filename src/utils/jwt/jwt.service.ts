@@ -1,26 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SignOptions } from 'jsonwebtoken';
-import { JwtService } from '@nestjs/jwt';
+
 import * as jwt from 'jsonwebtoken';
-import configration from 'src/common/configration';
-import { compileFunction } from 'vm';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
-import { InjectModel } from '@nestjs/mongoose';
-import { RefreshToken } from './schema/Refreshtoken';
-import { Model } from 'mongoose';
-import { AuthService } from 'src/auth/auth.service';
-const BASE_OPTIONS: SignOptions = {
-  issuer: configration().jwtsecret,
-};
-const user = { _id: '62ebbe803152947ce40b0092' };
+import configration from '../../common/configration';
+
+import { AuthService } from '../../auth/auth.service';
 
 @Injectable()
 export class JwtsService {
   constructor(private readonly AuthService: AuthService) {}
 
   /**Create Access  */
-  async CreateAccesstoken(Email) {
-    return jwt.sign({ Email }, configration().jwtsecret, {
+  async createAccesstoken(email) {
+    return jwt.sign({ email }, configration().jwtsecret, {
       expiresIn: '2h',
     });
   }
@@ -35,7 +26,7 @@ export class JwtsService {
     }
   }
   /** Create refresh token */
-  async CreateRefreshToken(user) {
+  async createRefreshToken(user) {
     const { _id, userId } = user;
     const token = jwt.sign({ userId }, configration().jwtsecret, {
       expiresIn: '60d',

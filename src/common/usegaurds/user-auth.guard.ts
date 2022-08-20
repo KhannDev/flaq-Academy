@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { UserService } from 'src/user/user.service';
-import { JwtsService } from 'src/utils/jwt/jwt.service';
+import { UserService } from '../../user/user.service';
+import { JwtsService } from '../../utils/jwt/jwt.service';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {
@@ -23,16 +23,6 @@ export class UserAuthGuard implements CanActivate {
 
     console.log({ cookies: req.cookies, headers: req.headers });
 
-    // const data = [];
-    // data.push(req.headers.cookie);
-
-    // const dataInString = data[0].split(' ');
-
-    //  headers: any = {};
-    // for (let n of dataInString) {
-    //   const news = n.split('=');
-    //   headers[news[0]] = news[1];
-    // }
     if (!req.cookies) req.cookies = {};
     if (!req.headers) req.headers = {};
 
