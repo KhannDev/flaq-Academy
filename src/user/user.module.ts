@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Mongoose } from 'mongoose';
 import { AuthModule } from '../auth/auth.module';
 import { HashingService } from '../utils/hashing/hashing.service';
-import { IdGeneratorService } from '../utils/Id-generator/Id-generator.service';
+import { IdGeneratorService } from '../utils/id-generator/id-generator.service';
 import { JwtsService } from '../utils/jwt/jwt.service';
 import { User, UserSchema } from './schema/user.schema';
 import { UserController } from './user.controller';
