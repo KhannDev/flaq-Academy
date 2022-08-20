@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Mongoose } from 'mongoose';
-import { AuthModule } from 'src/auth/auth.module';
-import { HashingService } from 'src/utils/hashing/hashing.service';
-import { IdGeneratorService } from 'src/utils/Id-generator/Id-generator.service';
-import { JwtsService } from 'src/utils/jwt/jwt.service';
+import { AuthModule } from '../auth/auth.module';
+import { HashingService } from '../utils/hashing/hashing.service';
+import { IdGeneratorService } from '../utils/Id-generator/Id-generator.service';
+import { JwtsService } from '../utils/jwt/jwt.service';
 import { User, UserSchema } from './schema/user.schema';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';

@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { HashingService } from 'src/utils/hashing/hashing.service';
-import { IdGeneratorService } from 'src/utils/Id-generator/Id-generator.service';
+import { HashingService } from '../utils/hashing/hashing.service';
+import { IdGeneratorService } from '../utils/Id-generator/Id-generator.service';
 import {
   RefreshTokenDto,
   UserCredentialsDto,
