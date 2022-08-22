@@ -6,7 +6,7 @@ import { Campaign } from './campaigns.schema';
 
 export type ParticipateCampaignDocument = ParticipateCampaign & Document;
 
-@Schema({ timestamps: true, collection: 'ParticipateCampaign' })
+@Schema({ timestamps: true, collection: 'participateCampaign' })
 export class ParticipateCampaign {
   @Prop({ type: Boolean, default: false })
   isComplete: boolean;

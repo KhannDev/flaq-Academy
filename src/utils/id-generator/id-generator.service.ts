@@ -5,7 +5,7 @@ import { customAlphabet } from 'nanoid';
 export class IdGeneratorService {
   private cumtomNano6: () => string;
   private cumtomNano4: () => string;
-  private cumtomNano3: () => string;
+  private cumtomNano2: () => string;
 
   constructor() {
     // this.cumtomNano6 = customAlphabet(
@@ -16,13 +16,13 @@ export class IdGeneratorService {
       'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
       4,
     );
-    this.cumtomNano3 = customAlphabet(
+    this.cumtomNano2 = customAlphabet(
       'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
-      3,
+      2,
     );
   }
 
   generateReferal(prefix: string): string {
-    return prefix + '-' + this.cumtomNano4() + '-' + this.cumtomNano4();
+    return prefix + '-' + this.cumtomNano4() + '-' + this.cumtomNano2();
   }
 }

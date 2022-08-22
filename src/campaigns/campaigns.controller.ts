@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ReqUser } from 'src/common/decorators/req-user.decorator';
-import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
+import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
+import { ReqUser } from '../common/decorators/req-user.decorator';
+import { UserAuthGuard } from '../common/usegaurds/user-auth.guard';
 import { CampaignsService } from './campaigns.service';
 import {
   AddQuiztoCampaignDto,
@@ -22,7 +22,8 @@ export class CampaignsController {
     return this.campaignservice.createCampaign(data);
   }
   /** Create Campaigns  */
-  // @UseGuards(UserAuthGuard)
+  @ApiBasicAuth()
+  @UseGuards(UserAuthGuard)
   @Get('/allCampaigns')
   async getAllCampaigns() {
     return await this.campaignservice.getAllCampaigns();

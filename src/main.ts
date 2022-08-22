@@ -10,10 +10,10 @@ async function bootstrap() {
   app.use(cookieParser());
   //Setting up swagger
   const config = new DocumentBuilder()
-    .setTitle('Demo Application')
-    .setDescription('Demo API Application')
+    .setTitle('Flaq')
+    .setDescription('Flaq App API description')
     .setVersion('v1')
-    .addTag('books')
+    .addBearerAuth()
     .build();
 
   // console.log(app);

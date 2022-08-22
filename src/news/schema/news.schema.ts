@@ -2,13 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type NewsDocument = News & Document;
 
-@Schema({ timestamps: true, collection: 'News' })
+@Schema({ timestamps: true, collection: 'news' })
 export class News {
   @Prop({ type: String })
-  Title: string;
+  title: string;
   @Prop({ type: String })
-  Description: string;
+  description: string;
   @Prop({ type: String })
-  Image: string;
+  image: string;
 }
 export const NewsSchema = SchemaFactory.createForClass(News);

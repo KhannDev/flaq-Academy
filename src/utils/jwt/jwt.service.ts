@@ -18,9 +18,9 @@ export class JwtsService {
   // validate Access token
   async decodeAccessToken(token: string) {
     const data: any = jwt.verify(token, configration().jwtsecret);
-    // console.log('Tokenz', tokenz);
+
     if (data) {
-      return data.Email;
+      return data.email;
     } else {
       throw new HttpException('Invalid Access Token', HttpStatus.UNAUTHORIZED);
     }
@@ -44,7 +44,7 @@ export class JwtsService {
         refreshtokens,
         configration().jwtsecret,
       );
-      // console.log(payload);
+
       return payload;
     } catch (e) {
       throw new HttpException('Invalid RefreshToken', HttpStatus.NOT_FOUND);

@@ -19,7 +19,7 @@ export class UserAuthGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
-    console.log(req);
+    // console.log(req);
 
     console.log({ cookies: req.cookies, headers: req.headers });
 
@@ -40,9 +40,10 @@ export class UserAuthGuard implements CanActivate {
       if (accessTokenFromCookie) accessToken = accessTokenFromCookie;
       else if (accessTokenFromHeader)
         accessToken = String(accessTokenFromHeader);
+      console.log('access token', accessToken);
 
       const userEmail = await this.jwt.decodeAccessToken(accessToken);
-
+      console.log(userEmail);
       const user = await this.auth.findUserwithEmail(userEmail);
       if (!user)
         throw new HttpException('No Such Users', HttpStatus.BAD_REQUEST);

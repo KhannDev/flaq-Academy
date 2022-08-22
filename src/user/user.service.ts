@@ -18,13 +18,13 @@ export class UserService {
     const { password } = data;
 
     const hashedpassword = await this.hashing.toHash(password);
-    console.log(hashedpassword);
-    const ReferalCodez = this.idgeneratorservice.generateReferal('US');
+
+    const generatedReferalCode = this.idgeneratorservice.generateReferal('US');
     const user = this.userModel.create({
-      Email: data.email,
-      Password: hashedpassword,
-      DeviceToken: data.deviceToken,
-      ReferralCode: ReferalCodez,
+      email: data.email,
+      password: hashedpassword,
+      deviceToken: data.deviceToken,
+      referralCode: generatedReferalCode,
     });
     return user;
   }
@@ -32,27 +32,28 @@ export class UserService {
   findUserwithEmail(email: string) {
     return this.userModel.findOne({ email }).select('+password');
   }
-  async applyReferal(refCode: UserReferralDto, user) {
+  async applyReferral(refCode: UserReferralDto, user) {
     //Checking if the user with the provided Referral code Exists
     const res = await this.userModel.findOne({
       referralCode: refCode.refferalCode,
     });
+    console.log(res);
     if (!res) {
-      throw new HttpException('Invalid Referal Code', HttpStatus.NOT_FOUND);
+      throw new HttpException('Invalid Referral Code', HttpStatus.NOT_FOUND);
     }
 
     //Updating the users Referral  with the new users Id
     await this.userModel.findByIdAndUpdate(
       {
-        _id: res[0]._id,
+        _id: res._id,
       },
-      { $push: { Referrals: user._id } },
+      { $push: { referrals: user._id } },
     );
     //Allowing the new user to be let into the app
     await this.userModel.findByIdAndUpdate(
       { _id: user._id },
       {
-        $set: { IsAllowed: true },
+        $set: { isAllowed: true },
       },
     );
   }

@@ -19,13 +19,15 @@ export class UserController {
   /**Get user Profile */
 
   /**Apply  User Referral */
+  @ApiOperation({ summary: 'Adding Referral Code' })
   @UseGuards(UserAuthGuard)
-  @Post('/userReferral')
+  @Post('/referral')
   async userReferral(@Body() code: UserReferralDto, @ReqUser() user: User) {
-    return await this.userservice.applyReferal(code, user);
+    return await this.userservice.applyReferral(code, user);
   }
+  @ApiOperation({ summary: 'fetching User Meta data' })
   @UseGuards(UserAuthGuard)
-  @Post('userdetails')
+  @Post('details')
   async userDetail(@ReqUser() user) {
     return this.userservice.findUser(user._id);
   }

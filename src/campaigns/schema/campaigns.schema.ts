@@ -5,7 +5,7 @@ import { Quiz } from './quiz.schema';
 
 export type CampaignDocument = Campaign & Document;
 
-@Schema({ timestamps: true, collection: 'Campaigns' })
+@Schema({ timestamps: true, collection: 'campaigns' })
 export class Campaign {
   @Prop({ type: String })
   description: string;
