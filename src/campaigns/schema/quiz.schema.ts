@@ -5,11 +5,11 @@ import { Campaign } from './campaigns.schema';
 
 export type QuizDocument = Quiz & Document;
 
-@Schema({ timestamps: true, collection: 'Quiz_templates' })
+@Schema({ timestamps: true, collection: 'quiz_templates' })
 export class Quiz {
   @Prop({ type: String })
-  Title: string;
-  @Prop({ type: Questions })
-  Questions: Questions;
+  title: string;
+  @Prop({ type: [] })
+  questions: Questions[];
 }
 export const QuizSchema = SchemaFactory.createForClass(Quiz);

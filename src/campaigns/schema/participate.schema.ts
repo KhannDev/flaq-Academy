@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { User } from 'src/user/schema/user.schema';
+import { User } from '../../user/schema/user.schema';
 import { Articles, Questions, QuizDto, Quizzes } from '../dto/campaign.dto';
 import { Campaign } from './campaigns.schema';
 
 export type ParticipateCampaignDocument = ParticipateCampaign & Document;
 
-@Schema({ timestamps: true, collection: 'participateCampaign' })
+@Schema({ timestamps: true, collection: 'campaign_participate' })
 export class ParticipateCampaign {
   @Prop({ type: Boolean, default: false })
   isComplete: boolean;

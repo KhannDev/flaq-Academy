@@ -13,47 +13,21 @@ export class Quizzes {
   ids: [];
 }
 export class CampaignDto {
-  @ApiProperty()
   @IsString()
   description: string;
-  @ApiProperty()
+
   @IsString()
   title: string;
-  @ApiProperty()
-  @IsString()
-  tickerName: string;
-  @ApiProperty()
-  @IsString()
-  tickerImageUrl: string;
-  @ApiProperty()
-  @IsString()
-  taskType: string;
-  @ApiProperty()
-  @IsString()
-  ytVideoUrl: string;
-  @ApiProperty()
+
   @IsString()
   image: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  requiredFlaq: number;
-  @ApiProperty()
-  @IsNotEmpty()
-  flaqReward: number;
-  @ApiProperty()
-  @IsNotEmpty()
-  airDropUser: number;
-  @ApiProperty()
-  @IsNotEmpty()
-  totalAirDrop: number;
-  @ApiProperty()
-  @IsNotEmpty()
-  currentAirDrop: number;
-  @ApiProperty()
-  articles: Articles[];
-  @ApiProperty()
-  @IsNotEmpty()
-  quizzes: string[];
+  contentType: string;
+
+  yTVideoUrl?: string;
+
+  articles?: Articles[];
+
+  quizzes?: string[];
 }
 export class Questions {
   @IsString()
@@ -70,7 +44,7 @@ export class QuizDto {
   title: string;
 
   @IsNotEmpty()
-  questions: Questions;
+  questions: Questions[];
 }
 export class AddQuiztoCampaignDto {
   @IsString()
@@ -90,6 +64,4 @@ export class EvaluateQuizDto {
   campaignPartipationId: string;
   @ApiProperty()
   campaignId: string;
-  @ApiProperty()
-  quizTemplateId: string;
 }

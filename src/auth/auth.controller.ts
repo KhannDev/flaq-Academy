@@ -16,12 +16,11 @@ import { HttpService } from '@nestjs/axios';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { response, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
-import { ReqUser } from 'src/common/decorators/req-user.decorator';
-import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
-import { RefreshTokenDto, UserCredentialsDto } from 'src/user/dto/user.dto';
-import { UserService } from 'src/user/user.service';
-import { HashingService } from 'src/utils/hashing/hashing.service';
-import { JwtsService } from 'src/utils/jwt/jwt.service';
+
+import { RefreshTokenDto, UserCredentialsDto } from '../user/dto/user.dto';
+import { UserService } from '../user/user.service';
+import { HashingService } from '../utils/hashing/hashing.service';
+import { JwtsService } from '../utils/jwt/jwt.service';
 import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
@@ -164,62 +163,64 @@ export class AuthController {
     };
   }
 
-  //Discord setup
-  // @Get('/test')
-  // async Discordsetup(
-  //   @Query('code') code: string,
-  //   @Res({ passthrough: true }) response,
-  // ) {
-  //   console.log(code);
-  //   // const formData = new URL.URLSearchParams({
-  //   //   client_id: '1007966558527684688',
-  //   // });
+  @Get('/test')
+  async Discordsetup(
+    @Query('code') code: string,
+    @Res({ passthrough: true }) response,
+  ) {
+    console.log(code);
+    // const formData = new URL.URLSearchParams({
+    //   client_id: '1007966558527684688',
+    // });
 
-  //   try {
-  //     const res = await lastValueFrom(
-  //       this.httpservice.request({
-  //         method: 'POST',
-  //         url: 'https://discord.com/api/oauth2/token',
-  //         data: qs.stringify({
-  //           client_id: '1007966558527684688',
-  //           client_secret: 'nSecJJf_jn7cLSnM1JzEYtET9zxVD-DA',
-  //           grant_type: 'authorization_code',
-  //           code: code.toString(),
-  //           redirect_uri: 'http://localhost:3000/auth/test',
-  //         }),
-  //         headers: {
-  //           'Content-Type': 'application/x-www-form-urlencoded',
-  //         },
-  //       }),
-  //     );
-  //     console.log(res.data);
-  //     //TODO check if the user is of role Admin
+    try {
+      const res = await lastValueFrom(
+        this.httpservice.request({
+          method: 'POST',
+          url: 'https://discord.com/api/oauth2/token',
+          data: qs.stringify({
+            client_id: '1007966558527684688',
+            client_secret: 'nSecJJf_jn7cLSnM1JzEYtET9zxVD-DA',
+            grant_type: 'authorization_code',
+            code: code.toString(),
+            redirect_uri: 'http://localhost:3000/auth/test',
+          }),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }),
+      );
+      console.log(res.data);
+      //TODO check if the user is of role Admin
+      // if (res.status !== 200)
+      //   throw new HttpException('Dead', HttpStatus.CONFLICT);
+      response.status(300);
+      if (res.status == 200) {
+        console.log(1);
+        await this.authservice.userGuild(res.data.access_token);
+        const userDiscordData = await this.authservice.getDiscordUserData(
+          res.data.access_token,
+        );
+        console.log(userDiscordData);
+        //Check if the user is already created
+        const userData = await this.authservice.getUser(userDiscordData.email);
+        console.log(userData);
+        if (!userData) {
+          const newUser = await this.authservice.createContributor(
+            userDiscordData,
+          );
+          console.log(newUser);
 
-  //     if (res.status == 200) {
-  //       console.log(1);
-  //       await this.authservice.userGuild(res.data.access_token);
-  //       const userDiscordData = await this.authservice.getDiscordUserData(
-  //         res.data.access_token,
-  //       );
-  //       console.log(userDiscordData);
-  //       //Check if the user is already created
-  //       const userData = await this.authservice.getUser(userDiscordData.email);
-  //       console.log(userData);
-  //       if (!userData) {
-  //         const newUser = await this.authservice.createContributor(
-  //           userDiscordData,
-  //         );
-  //         console.log(newUser);
+          // res.cookie()
+        }
 
-  //         // res.cookie()
-  //       }
-
-  //       // response.cookie('discord-access-token', res.data.access_token);
-  //     } else throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
-  //   } catch (e) {
-  //     console.log(e);
-  //     return e.message;
-  //  } }
+        // response.cookie('discord-access-token', res.data.access_token);
+      } else throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+    } catch (e) {
+      console.log(e);
+      return e.message;
+    }
+  }
 
   // @Get('testing1')
   // async discorduser() {

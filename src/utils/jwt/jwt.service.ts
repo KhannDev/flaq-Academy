@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import * as jwt from 'jsonwebtoken';
-import configration from '../../common/configration';
+import configuration from '../../common/configuration';
 
 import { AuthService } from '../../auth/auth.service';
 
@@ -11,13 +11,13 @@ export class JwtsService {
 
   /**Create Access  */
   async createAccesstoken(email) {
-    return jwt.sign({ email }, configration().jwtsecret, {
+    return jwt.sign({ email }, configuration().jwtsecret, {
       expiresIn: '2h',
     });
   }
   // validate Access token
   async decodeAccessToken(token: string) {
-    const data: any = jwt.verify(token, configration().jwtsecret);
+    const data: any = jwt.verify(token, configuration().jwtsecret);
 
     if (data) {
       return data.email;
@@ -28,7 +28,7 @@ export class JwtsService {
   /** Create refresh token */
   async createRefreshToken(user) {
     const { _id, userId } = user;
-    const token = jwt.sign({ userId }, configration().jwtsecret, {
+    const token = jwt.sign({ userId }, configuration().jwtsecret, {
       expiresIn: '60d',
       jwtid: String(_id),
     });
@@ -42,7 +42,7 @@ export class JwtsService {
     try {
       const payload: string | jwt.JwtPayload = jwt.verify(
         refreshtokens,
-        configration().jwtsecret,
+        configuration().jwtsecret,
       );
 
       return payload;

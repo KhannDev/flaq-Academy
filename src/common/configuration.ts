@@ -1,6 +1,11 @@
-const configration = () => ({
+import { Verify } from 'crypto';
+
+const configuration = () => ({
   databaseURI: verifyEnv('MONGO_URI'),
   jwtsecret: verifyEnv('JWT_SECRET'),
+  aws_s3_access_key: verifyEnv('AWS_S3_ACCESS_KEY_ID'),
+  aws_s3_secret_access: verifyEnv('AWS_S3_SECRET_ACCESS_KEY'),
+  aws_s3_flaq_bucket: verifyEnv('AWS_S3_FLAQ_BUCKET'),
 });
 const verifyEnv = (key: string) => {
   // if (!process.env[key]) {
@@ -11,4 +16,4 @@ const verifyEnv = (key: string) => {
   return String(value);
 };
 
-export default configration;
+export default configuration;

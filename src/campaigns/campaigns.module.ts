@@ -1,7 +1,8 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Contributor, ContributorSchema } from 'src/auth/schema/auth.schema';
+import { Contributor, ContributorSchema } from '../auth/schema/auth.schema';
+import { User, UserSchema } from '../user/schema/user.schema';
 import { AuthService } from '../auth/auth.service';
 import { UserModule } from '../user/user.module';
 import { JwtsService } from '../utils/jwt/jwt.service';
@@ -28,6 +29,7 @@ import { QuizEntries, QuizEntriesSchema } from './schema/quiz_entries.schema';
       { name: RefreshToken.name, schema: RefreshTokenSchema },
       { name: QuizEntries.name, schema: QuizEntriesSchema },
       { name: Contributor.name, schema: ContributorSchema },
+      { name: User.name, schema: UserSchema },
     ]),
     UserModule,
     HttpModule,

@@ -1,11 +1,11 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
 import { UserAuthGuard } from 'src/common/usegaurds/user-auth.guard';
 import { UserCredentialsDto, UserReferralDto } from './dto/user.dto';
 import { User } from './schema/user.schema';
 import { UserService } from './user.service';
-
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userservice: UserService) {}
@@ -19,7 +19,7 @@ export class UserController {
   /**Get user Profile */
 
   /**Apply  User Referral */
-  @ApiOperation({ summary: 'Adding Referral Code' })
+  @ApiOperation({ summary: 'adding Referral Code' })
   @UseGuards(UserAuthGuard)
   @Post('/referral')
   async userReferral(@Body() code: UserReferralDto, @ReqUser() user: User) {

@@ -6,10 +6,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import configration from './common/configration';
+
 import { JwtsService } from './utils/jwt/jwt.service';
 import { CampaignsModule } from './campaigns/campaigns.module';
 import { NewsModule } from './news/news.module';
+import { UtilsService } from './utils/utils.service';
+import { UtilsController } from './utils/utils.controller';
+import { UtilsModule } from './utils/utils.module';
+import { AwsS3Service } from './utils/aws/aws.service';
+import configuration from './common/configuration';
 
 @Module({
   imports: [
@@ -20,15 +25,16 @@ import { NewsModule } from './news/news.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async () => ({
-        uri: configration().databaseURI,
+        uri: configuration().databaseURI,
       }),
     }),
     AuthModule,
     UserModule,
     CampaignsModule,
     NewsModule,
+    UtilsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, JwtsService],
+  controllers: [AppController, UtilsController],
+  providers: [AppService, JwtsService, UtilsService, AwsS3Service],
 })
 export class AppModule {}

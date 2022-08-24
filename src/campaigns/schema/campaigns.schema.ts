@@ -3,6 +3,12 @@ import { Types } from 'mongoose';
 import { Articles, Quizzes } from '../dto/campaign.dto';
 import { Quiz } from './quiz.schema';
 
+export enum ContentType {
+  Video = 'Video',
+  Articles = 'Articles',
+  VideoAndArticles = 'VideoAndArticles',
+}
+
 export type CampaignDocument = Campaign & Document;
 
 @Schema({ timestamps: true, collection: 'campaigns' })
@@ -20,6 +26,8 @@ export class Campaign {
   taskType: string;
   @Prop({ type: String })
   yTVideoUrl: string;
+  @Prop({ type: String, enum: Object.values(ContentType) })
+  status: ContentType;
   @Prop({ type: String })
   image: string;
   @Prop({ type: Number })
@@ -32,8 +40,8 @@ export class Campaign {
   totalAirDrop: number;
   @Prop({ type: Number })
   currentAirDrop: number;
-  @Prop({ type: Articles })
-  articles: [] | string;
+  @Prop({ type: [] })
+  articles: Articles[];
   @Prop({ type: [{ type: Types.ObjectId, ref: Quiz.name }] })
   quizzes: string[];
 }
