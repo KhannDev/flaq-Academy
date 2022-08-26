@@ -14,6 +14,7 @@ import { UtilsService } from './utils/utils.service';
 import { UtilsController } from './utils/utils.controller';
 import { UtilsModule } from './utils/utils.module';
 import { AwsS3Service } from './utils/aws/aws.service';
+import { CreatorsModule } from './creators/creators.module';
 import configuration from './common/configuration';
 
 @Module({
@@ -33,6 +34,7 @@ import configuration from './common/configuration';
     CampaignsModule,
     NewsModule,
     UtilsModule,
+    CreatorsModule,
   ],
   controllers: [AppController, UtilsController],
   providers: [AppService, JwtsService, UtilsService, AwsS3Service],

@@ -17,13 +17,13 @@ export class JwtsService {
   }
   // validate Access token
   async decodeAccessToken(token: string) {
+    // try {
     const data: any = jwt.verify(token, configuration().jwtsecret);
 
-    if (data) {
-      return data.email;
-    } else {
-      throw new HttpException('Invalid Access Token', HttpStatus.UNAUTHORIZED);
-    }
+    return data.email;
+    // } catch (e) {
+    //   throw new HttpException('Invalid Access Token', HttpStatus.UNAUTHORIZED);
+    // }
   }
   /** Create refresh token */
   async createRefreshToken(user) {
@@ -35,8 +35,6 @@ export class JwtsService {
     return token;
   }
 
-  /**Validate Access token */
-
   /**Validate Refreshtoken */
   async decodeRefreshToken(refreshtokens: any): Promise<any> {
     try {
@@ -44,7 +42,6 @@ export class JwtsService {
         refreshtokens,
         configuration().jwtsecret,
       );
-
       return payload;
     } catch (e) {
       throw new HttpException('Invalid RefreshToken', HttpStatus.NOT_FOUND);

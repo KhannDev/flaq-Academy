@@ -11,15 +11,15 @@ import { lastValueFrom } from 'rxjs';
 import { UserCredentialsDto } from '../user/dto/user.dto';
 import { UserService } from '../user/user.service';
 import { RefreshToken } from '../utils/jwt/schema/Refreshtoken';
-import { Contributor } from './schema/auth.schema';
+import { Creators } from './schema/auth.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(RefreshToken.name)
     private readonly refreshTokenModel: Model<RefreshToken>,
-    @InjectModel(Contributor.name)
-    private readonly contributorModel: Model<Contributor>,
+    @InjectModel(Creators.name)
+    private readonly contributorModel: Model<Creators>,
     private readonly userservice: UserService,
     private readonly httpservice: HttpService,
   ) {}
@@ -89,14 +89,19 @@ export class AuthService {
         }),
       );
       //check if the user is present in the flaq club server
-      const data = res.data.find((o) => o.name === 'Flaq Club');
-      if (!data)
-        throw new HttpException(
-          'User not a member of Flaq Club',
-          HttpStatus.UNAUTHORIZED,
-        );
-    } catch (e) {
-      return e.message;
-    }
+      // console.log(res);
+      const data = res.data.find((o) => o.name === 'Flaq Clu');
+      console.log('data', data);
+
+      return data;
+
+      // if (typeof data == 'undefined') {
+      //   console.log(1);
+      //   throw new HttpException(
+      //     'User not a member of Flaq Club',
+      //     HttpStatus.UNAUTHORIZED,
+      //   );
+      // }
+    } catch (e) {}
   }
 }

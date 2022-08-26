@@ -38,23 +38,28 @@ export class CampaignsService {
    * @returns Newly created Campaign object
    * */
   async createCampaign(data: CampaignDto) {
-    await this.CampaignModel.create({
-      description: data.description,
-      title: data.title,
-      articles: data.articles,
-      tickerName: '',
-      contentType: data.contentType,
-      tickerImageUrl: '',
-      taskType: '',
-      yTVideoUrl: data.yTVideoUrl || '',
-      image: data.image || '',
-      requiredFlaq: 0,
-      flaqReward: 0,
-      airDropUser: 0,
-      totalAirDrop: 0,
-      currentAirDrop: 0,
-      quizzes: data.quizzes,
-    });
+    try {
+      const res = await this.CampaignModel.create({
+        description: data.description,
+        title: data.title,
+        articles: data.articles,
+        tickerName: '',
+        contentType: data.contentType,
+        tickerImageUrl: '',
+        taskType: '',
+        yTVideoUrl: data.yTVideoUrl || '',
+        image: data.image || '',
+        requiredFlaq: 0,
+        flaqReward: 0,
+        airDropUser: 0,
+        totalAirDrop: 0,
+        currentAirDrop: 0,
+        quizzes: data.quizzes,
+      });
+      //Add the campaigns to the respective creator
+    } catch (e) {
+      return new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**

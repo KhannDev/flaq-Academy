@@ -27,7 +27,7 @@ export class Campaign {
   @Prop({ type: String })
   yTVideoUrl: string;
   @Prop({ type: String, enum: Object.values(ContentType) })
-  status: ContentType;
+  contentType: ContentType;
   @Prop({ type: String })
   image: string;
   @Prop({ type: Number })

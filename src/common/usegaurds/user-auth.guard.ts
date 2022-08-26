@@ -21,7 +21,7 @@ export class UserAuthGuard implements CanActivate {
     const req: Request = context.switchToHttp().getRequest();
     // console.log(req);
 
-    console.log({ cookies: req.cookies, headers: req.headers });
+    // console.log({ cookies: req.cookies, headers: req.headers });
 
     if (!req.cookies) req.cookies = {};
     if (!req.headers) req.headers = {};
@@ -40,11 +40,19 @@ export class UserAuthGuard implements CanActivate {
       if (accessTokenFromCookie) accessToken = accessTokenFromCookie;
       else if (accessTokenFromHeader)
         accessToken = String(accessTokenFromHeader);
-      console.log('access token', accessToken);
+      // console.log('access token', accessToken);
 
       const userEmail = await this.jwt.decodeAccessToken(accessToken);
-      console.log(userEmail);
+
+      if (!userEmail) {
+        throw new HttpException(
+          'Invalid Access token',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
       const user = await this.auth.findUserwithEmail(userEmail);
+
       if (!user)
         throw new HttpException('No Such Users', HttpStatus.BAD_REQUEST);
       // @ts-ignore
@@ -52,6 +60,11 @@ export class UserAuthGuard implements CanActivate {
       return true;
     } catch (e) {
       console.log(e.message);
+      if (e.message == 'jwt expired')
+        throw new HttpException(
+          'Invalid Access Token',
+          HttpStatus.UNAUTHORIZED,
+        );
       return false;
     }
   }

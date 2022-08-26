@@ -91,7 +91,7 @@ export class AuthController {
       if (!matchPassword) {
         throw new HttpException(
           `Password is incorrect`,
-          HttpStatus.UNAUTHORIZED,
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -126,16 +126,10 @@ export class AuthController {
   ) {
     try {
       const data = await this.jwt.decodeRefreshToken(datas.refreshToken);
-
-      // if (!data) {
-      //   throw new HttpException(
-      //     'Invalid Refresh111Token',
-      //     HttpStatus.NOT_FOUND,
-      //   );
-      // }
+      console.log(data);
 
       const { email } = await this.userservice.findUser(data.userId);
-
+      console.log(email);
       if (email) {
         const accessToken = await this.jwt.createAccesstoken(email);
 
@@ -168,11 +162,6 @@ export class AuthController {
     @Query('code') code: string,
     @Res({ passthrough: true }) response,
   ) {
-    console.log(code);
-    // const formData = new URL.URLSearchParams({
-    //   client_id: '1007966558527684688',
-    // });
-
     try {
       const res = await lastValueFrom(
         this.httpservice.request({
@@ -182,7 +171,7 @@ export class AuthController {
             client_id: '1007966558527684688',
             client_secret: 'nSecJJf_jn7cLSnM1JzEYtET9zxVD-DA',
             grant_type: 'authorization_code',
-            code: code.toString(),
+            code: code,
             redirect_uri: 'http://localhost:3000/auth/test',
           }),
           headers: {
@@ -190,41 +179,45 @@ export class AuthController {
           },
         }),
       );
-      console.log(res.data);
+
       //TODO check if the user is of role Admin
-      // if (res.status !== 200)
-      //   throw new HttpException('Dead', HttpStatus.CONFLICT);
-      response.status(300);
-      if (res.status == 200) {
-        console.log(1);
-        await this.authservice.userGuild(res.data.access_token);
-        const userDiscordData = await this.authservice.getDiscordUserData(
-          res.data.access_token,
+
+      //Check if the user if part of Flaq Club guild
+      const guild = await this.authservice.userGuild(res.data.access_token);
+      if (!guild)
+        throw new HttpException(
+          'User Not part of Flaq Club',
+          HttpStatus.BAD_REQUEST,
         );
-        console.log(userDiscordData);
-        //Check if the user is already created
-        const userData = await this.authservice.getUser(userDiscordData.email);
-        console.log(userData);
-        if (!userData) {
-          const newUser = await this.authservice.createContributor(
-            userDiscordData,
-          );
-          console.log(newUser);
+      //Get discord users meta data
+      const userDiscordData = await this.authservice.getDiscordUserData(
+        res.data.access_token,
+      );
 
-          // res.cookie()
-        }
+      //Check if the user is already created
+      const userData = await this.authservice.getUser(userDiscordData.email);
+      response.cookie('x-access-token', res.data.access_token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: false,
+        secure: false,
+      });
+      response.cookie('x-refresh-token', res.data.refresh_token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: false,
+        secure: false,
+      });
+      if (!userData) {
+        const newUser = await this.authservice.createContributor(
+          userDiscordData,
+        );
+        console.log(newUser);
 
-        // response.cookie('discord-access-token', res.data.access_token);
-      } else throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+        return newUser;
+      }
+
+      return userData;
     } catch (e) {
-      console.log(e);
-      return e.message;
+      return e;
     }
   }
-
-  // @Get('testing1')
-  // async discorduser() {
-  //   return this.authservice.getDiscordUserGuild(
-  //     '6H4Z03HWQabCx4oWd14l3Z2wKAu7Gh',
-  //   );
 }

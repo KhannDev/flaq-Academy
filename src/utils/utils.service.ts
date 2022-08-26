@@ -5,7 +5,7 @@ import { AwsS3Service } from './aws/aws.service';
 export class UtilsService {
   constructor(private readonly awsservice: AwsS3Service) {}
 
-  async uploadfiles(filename, fileExtension) {
+  async uploadfiles(filename: string, fileExtension: string) {
     return await this.awsservice.getSignedUrl(filename, fileExtension);
   }
 }

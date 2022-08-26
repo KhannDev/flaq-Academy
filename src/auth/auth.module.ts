@@ -12,14 +12,14 @@ import {
 } from '../utils/jwt/schema/Refreshtoken';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { Contributor, ContributorSchema } from './schema/auth.schema';
+import { Creators, CreatorsSchema } from './schema/auth.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: RefreshToken.name, schema: RefreshTokenSchema },
       { name: User.name, schema: UserSchema },
-      { name: Contributor.name, schema: ContributorSchema },
+      { name: Creators.name, schema: CreatorsSchema },
     ]),
     HttpModule,
   ],

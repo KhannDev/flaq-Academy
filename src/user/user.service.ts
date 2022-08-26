@@ -58,7 +58,11 @@ export class UserService {
     );
   }
   async findUser(user) {
-    const res = await this.userModel.findById({ _id: user });
-    return res;
+    try {
+      const res = await this.userModel.findById({ _id: user });
+      return res;
+    } catch (e) {
+      throw new HttpException('No Such User', HttpStatus.BAD_REQUEST);
+    }
   }
 }
