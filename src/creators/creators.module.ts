@@ -4,6 +4,6 @@ import { CreatorsController } from './creators.controller';
 
 @Module({
   providers: [CreatorsService],
-  controllers: [CreatorsController]
+  controllers: [CreatorsController],
 })
 export class CreatorsModule {}

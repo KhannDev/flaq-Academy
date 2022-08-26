@@ -9,6 +9,11 @@ export enum ContentType {
   VideoAndArticles = 'VideoAndArticles',
 }
 
+enum CampaignStatus {
+  Pipeline = 'Pipeline',
+  Approved = 'Approved',
+}
+
 export type CampaignDocument = Campaign & Document;
 
 @Schema({ timestamps: true, collection: 'campaigns' })
@@ -28,6 +33,8 @@ export class Campaign {
   yTVideoUrl: string;
   @Prop({ type: String, enum: Object.values(ContentType) })
   contentType: ContentType;
+  @Prop({ type: String, enum: Object.values(CampaignStatus) })
+  status: CampaignStatus;
   @Prop({ type: String })
   image: string;
   @Prop({ type: Number })
