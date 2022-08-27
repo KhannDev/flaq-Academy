@@ -22,6 +22,7 @@ import { UserService } from '../user/user.service';
 import { HashingService } from '../utils/hashing/hashing.service';
 import { JwtsService } from '../utils/jwt/jwt.service';
 import { AuthService } from './auth.service';
+import configuration from 'src/common/configuration';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -87,7 +88,6 @@ export class AuthController {
         data.password,
       );
 
-      console.log(2);
       if (!matchPassword) {
         throw new HttpException(
           `Password is incorrect`,
@@ -126,7 +126,6 @@ export class AuthController {
   ) {
     try {
       const data = await this.jwt.decodeRefreshToken(datas.refreshToken);
-      console.log(data);
 
       const { email } = await this.userservice.findUser(data.userId);
       console.log(email);
@@ -168,18 +167,17 @@ export class AuthController {
           method: 'POST',
           url: 'https://discord.com/api/oauth2/token',
           data: qs.stringify({
-            client_id: '1007966558527684688',
-            client_secret: 'nSecJJf_jn7cLSnM1JzEYtET9zxVD-DA',
+            client_id: configuration().discord_access_id,
+            client_secret: configuration().discord_secret,
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'http://localhost:3000/auth/test',
+            redirect_uri: configuration().discord_redirect_url,
           }),
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         }),
       );
-
       //TODO check if the user is of role Admin
 
       //Check if the user if part of Flaq Club guild
@@ -193,7 +191,6 @@ export class AuthController {
       const userDiscordData = await this.authservice.getDiscordUserData(
         res.data.access_token,
       );
-
       //Check if the user is already created
       const userData = await this.authservice.getUser(userDiscordData.email);
       response.cookie('x-access-token', res.data.access_token, {
@@ -210,7 +207,6 @@ export class AuthController {
         const newUser = await this.authservice.createContributor(
           userDiscordData,
         );
-        console.log(newUser);
 
         return newUser;
       }

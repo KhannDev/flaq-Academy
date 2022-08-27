@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { Campaign } from 'src/campaigns/schema/campaigns.schema';
 import { User } from '../../user/schema/user.schema';
 
 export type CreatorsDocument = Creators & Document;
@@ -16,7 +17,7 @@ export class Creators {
   @Prop({ type: String })
   discordId: string;
   //Array of campaigns created by the user
-  @Prop({ type: [{ type: Types.ObjectId, ref: User.name }] })
-  campaign: string[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: Campaign.name }] })
+  campaigns: string[];
 }
 export const CreatorsSchema = SchemaFactory.createForClass(Creators);

@@ -72,7 +72,7 @@ export class AuthService {
       );
       return res.data;
     } catch (e) {
-      return e.message;
+      throw new HttpException('Invalid Access token', HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -90,7 +90,7 @@ export class AuthService {
       );
       //check if the user is present in the flaq club server
       // console.log(res);
-      const data = res.data.find((o) => o.name === 'Flaq Clu');
+      const data = res.data.find((o) => o.name === 'Flaq Club');
       console.log('data', data);
 
       return data;
