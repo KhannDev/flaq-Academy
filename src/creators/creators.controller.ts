@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CampaignDto } from 'src/campaigns/dto/campaign.dto';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
 import { CreatorAuthGuard } from 'src/common/usegaurds/creator-auth.guard';
 import { CreatorsService } from './creators.service';
 import { RefreshTokenDto } from './dto/creators.dto';
-
+@ApiTags('Creators')
 @Controller('creators')
 export class CreatorsController {
   constructor(private readonly creatorsservice: CreatorsService) {}

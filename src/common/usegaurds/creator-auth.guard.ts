@@ -66,7 +66,6 @@ export class CreatorAuthGuard implements CanActivate {
           HttpStatus.UNAUTHORIZED,
         );
       }
-      return false;
     }
   }
 }

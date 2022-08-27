@@ -60,6 +60,7 @@ export class AwsS3Service {
       Bucket: 'flaq-assets',
       Key: key,
       Expires: 60 * 60,
+      ACL: 'public-read',
     };
     const url = await this.s3.getSignedUrl('putObject', params);
     // this.logger.info(`AWS getSignedUrl success ${url}`);
