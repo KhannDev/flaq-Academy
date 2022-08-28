@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Post,
   Query,
+  Redirect,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -157,12 +158,14 @@ export class AuthController {
   }
 
   @Get('/test')
+  @Redirect('google.com')
   async Discordsetup(
     @Query('code') code: string,
     @Res({ passthrough: true }) response,
   ) {
+    let res;
     try {
-      const res = await lastValueFrom(
+      res = await lastValueFrom(
         this.httpservice.request({
           method: 'POST',
           url: 'https://discord.com/api/oauth2/token',
@@ -178,42 +181,36 @@ export class AuthController {
           },
         }),
       );
-      //TODO check if the user is of role Admin
-
-      //Check if the user if part of Flaq Club guild
-      const guild = await this.authservice.userGuild(res.data.access_token);
-      if (!guild)
-        throw new HttpException(
-          'User Not part of Flaq Club',
-          HttpStatus.BAD_REQUEST,
-        );
-      //Get discord users meta data
-      const userDiscordData = await this.authservice.getDiscordUserData(
-        res.data.access_token,
-      );
-      //Check if the user is already created
-      const userData = await this.authservice.getUser(userDiscordData.email);
-      response.cookie('x-access-token', res.data.access_token, {
-        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        httpOnly: false,
-        secure: false,
-      });
-      response.cookie('x-refresh-token', res.data.refresh_token, {
-        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        httpOnly: false,
-        secure: false,
-      });
-      if (!userData) {
-        const newUser = await this.authservice.createContributor(
-          userDiscordData,
-        );
-
-        return newUser;
-      }
-
-      return userData;
     } catch (e) {
       return e;
     }
+    //TODO check if the user is of role Admin
+
+    //Check if the user if part of Flaq Club guild
+    await this.authservice.userGuild(res.data.access_token);
+
+    //Get discord users meta data
+    const userDiscordData = await this.authservice.getDiscordUserData(
+      res.data.access_token,
+    );
+    //Check if the user is already created
+    const userData = await this.authservice.getUser(userDiscordData.email);
+    response.cookie('x-access-token', res.data.access_token, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      httpOnly: false,
+      secure: false,
+    });
+    response.cookie('x-refresh-token', res.data.refresh_token, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      httpOnly: false,
+      secure: false,
+    });
+    if (!userData) {
+      const newUser = await this.authservice.createCreator(userDiscordData);
+
+      return newUser;
+    }
+
+    return userData;
   }
 }
