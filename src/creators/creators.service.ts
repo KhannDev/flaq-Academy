@@ -71,6 +71,6 @@ export class CreatorsService {
   }
   //fetching campaigns for creator
   async getCampaigns(user) {
-    return this.creatormodel.find({ _id: user._id }).populate('campaign');
+    return this.creatormodel.find({ _id: user._id }).populate('campaigns');
   }
 }

@@ -19,7 +19,7 @@ export class AuthService {
     @InjectModel(RefreshToken.name)
     private readonly refreshTokenModel: Model<RefreshToken>,
     @InjectModel(Creators.name)
-    private readonly contributorModel: Model<Creators>,
+    private readonly creatorModel: Model<Creators>,
     private readonly userservice: UserService,
     private readonly httpservice: HttpService,
   ) {}
@@ -39,9 +39,9 @@ export class AuthService {
   //Discord API's
 
   // Creating a Contributor
-  async createContributor(data) {
+  async createCreator(data) {
     try {
-      const res = await this.contributorModel.create({
+      const res = await this.creatorModel.create({
         username: data.username,
         email: data.email,
         avator: data.avator,
@@ -55,7 +55,7 @@ export class AuthService {
 
   //Get user with email Id
   async getUser(email: string) {
-    return this.contributorModel.findOne({ email });
+    return this.creatorModel.findOne({ email });
   }
 
   //Get discored user data
@@ -90,18 +90,21 @@ export class AuthService {
       );
       //check if the user is present in the flaq club server
       // console.log(res);
-      const data = res.data.find((o) => o.name === 'Flaq Club');
+      const data = res.data.find((o) => o.name === 'Flaq Clu');
       console.log('data', data);
 
+      if (typeof data == 'undefined') {
+        throw new HttpException(
+          'User not a member of Flaq Club',
+          HttpStatus.FORBIDDEN,
+        );
+      }
       return data;
-
-      // if (typeof data == 'undefined') {
-      //   console.log(1);
-      //   throw new HttpException(
-      //     'User not a member of Flaq Club',
-      //     HttpStatus.UNAUTHORIZED,
-      //   );
-      // }
-    } catch (e) {}
+    } catch (e) {
+      throw new HttpException(
+        'User not a member of Flaq Club',
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 }
