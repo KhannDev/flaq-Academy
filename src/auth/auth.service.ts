@@ -90,8 +90,7 @@ export class AuthService {
       );
       //check if the user is present in the flaq club server
       // console.log(res);
-      const data = res.data.find((o) => o.name === 'Flaq Clu');
-      console.log('data', data);
+      const data = res.data.find((o) => o.name === 'Flaq Club');
 
       if (typeof data == 'undefined') {
         throw new HttpException(

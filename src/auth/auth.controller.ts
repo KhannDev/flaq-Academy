@@ -158,7 +158,7 @@ export class AuthController {
   }
 
   @Get('/test')
-  @Redirect('google.com')
+  @Redirect('https://google.com')
   async Discordsetup(
     @Query('code') code: string,
     @Res({ passthrough: true }) response,
@@ -194,7 +194,7 @@ export class AuthController {
       res.data.access_token,
     );
     //Check if the user is already created
-    const userData = await this.authservice.getUser(userDiscordData.email);
+    let userData = await this.authservice.getUser(userDiscordData.email);
     response.cookie('x-access-token', res.data.access_token, {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       httpOnly: false,
@@ -206,11 +206,12 @@ export class AuthController {
       secure: false,
     });
     if (!userData) {
-      const newUser = await this.authservice.createCreator(userDiscordData);
-
-      return newUser;
+      userData = await this.authservice.createCreator(userDiscordData);
     }
-
-    return userData;
+    // if (userData) {
+    //   response.redirect('http://localhost:3000/dashboard');
+    // }
+    // return 'Login Successful';
+    // return userData;
   }
 }
