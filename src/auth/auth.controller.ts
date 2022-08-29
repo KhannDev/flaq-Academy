@@ -158,7 +158,7 @@ export class AuthController {
   }
 
   @Get('/test')
-  @Redirect('https://google.com')
+  // @Redirect('https://localhost:3000/dashboard')
   async Discordsetup(
     @Query('code') code: string,
     @Res({ passthrough: true }) response,
@@ -208,10 +208,8 @@ export class AuthController {
     if (!userData) {
       userData = await this.authservice.createCreator(userDiscordData);
     }
-    // if (userData) {
-    //   response.redirect('http://localhost:3000/dashboard');
-    // }
-    // return 'Login Successful';
-    // return userData;
+    if (userData) {
+      response.redirect('http://localhost:3000/dashboard');
+    }
   }
 }
