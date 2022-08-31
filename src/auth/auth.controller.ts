@@ -14,7 +14,7 @@ import {
 import * as qs from 'qs';
 
 import { HttpService } from '@nestjs/axios';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { response, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 
@@ -24,6 +24,7 @@ import { HashingService } from '../utils/hashing/hashing.service';
 import { JwtsService } from '../utils/jwt/jwt.service';
 import { AuthService } from './auth.service';
 import configuration from 'src/common/configuration';
+import { CodeArtifact } from 'aws-sdk';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -129,7 +130,7 @@ export class AuthController {
       const data = await this.jwt.decodeRefreshToken(datas.refreshToken);
 
       const { email } = await this.userservice.findUser(data.userId);
-      console.log(email);
+
       if (email) {
         const accessToken = await this.jwt.createAccesstoken(email);
 
@@ -157,12 +158,14 @@ export class AuthController {
     };
   }
 
-  @Get('/test')
-  // @Redirect('https://localhost:3000/dashboard')
+  @Post('/discord-auth')
   async Discordsetup(
-    @Query('code') code: string,
-    @Res({ passthrough: true }) response,
+    // @Query('code') code: string,
+    @Body() data,
+    @Res({ passthrough: true })
+    response: Response,
   ) {
+    console.log('code', data.code);
     let res;
     try {
       res = await lastValueFrom(
@@ -173,7 +176,7 @@ export class AuthController {
             client_id: configuration().discord_access_id,
             client_secret: configuration().discord_secret,
             grant_type: 'authorization_code',
-            code: code,
+            code: data.code,
             redirect_uri: configuration().discord_redirect_url,
           }),
           headers: {
@@ -182,7 +185,7 @@ export class AuthController {
         }),
       );
     } catch (e) {
-      return e;
+      throw new HttpException('Invalid Body request', HttpStatus.BAD_REQUEST);
     }
     //TODO check if the user is of role Admin
 
@@ -208,8 +211,6 @@ export class AuthController {
     if (!userData) {
       userData = await this.authservice.createCreator(userDiscordData);
     }
-    if (userData) {
-      response.redirect('http://localhost:3000/dashboard');
-    }
+    return userData;
   }
 }
