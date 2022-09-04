@@ -14,7 +14,12 @@ import {
 import * as qs from 'qs';
 
 import { HttpService } from '@nestjs/axios';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { response, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 
@@ -25,6 +30,7 @@ import { JwtsService } from '../utils/jwt/jwt.service';
 import { AuthService } from './auth.service';
 import configuration from 'src/common/configuration';
 import { CodeArtifact } from 'aws-sdk';
+import { DiscordCodeDto } from './dto/auth.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -40,8 +46,9 @@ export class AuthController {
 
   /**User sign up  */
   @ApiOperation({
-    summary: 'User Sign up',
+    summary: 'user Sign up',
   })
+  @ApiResponse({ status: 201, description: 'The User is created Successfully' })
   @Post('/signup')
   async signUp(
     @Body() data: UserCredentialsDto,
@@ -77,7 +84,11 @@ export class AuthController {
     }
   }
   /**Login in  */
-  @ApiOperation({ summary: 'Login In user' })
+  @ApiOperation({ summary: 'login In user' })
+  @ApiResponse({
+    status: 201,
+    description: 'The User is Logged in  Successfully',
+  })
   @Post('/login')
   async login(
     @Body() data: UserCredentialsDto,
@@ -120,7 +131,11 @@ export class AuthController {
 
     /**Refresh Access token */
   }
-
+  @ApiOperation({ summary: 'refresh Access token ' })
+  @ApiResponse({
+    status: 201,
+    description: ' New Access token created Successfully',
+  })
   @Post('token/refresh')
   async issueNewAccessToken(
     @Body() datas: RefreshTokenDto,
@@ -145,6 +160,7 @@ export class AuthController {
       return e;
     }
   }
+  //Logout user
   @Get('logout')
   @ApiOperation({
     description: 'Log the user out of the system',
@@ -157,11 +173,18 @@ export class AuthController {
       loggedOut: true,
     };
   }
-
+  // Authenticating Creators Login from Discords Login
+  @ApiOperation({
+    summary: 'authenticate Discord Login For creators Dashboard',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The User is Logged in  Successfully',
+  })
   @Post('/discord-auth')
   async Discordsetup(
     // @Query('code') code: string,
-    @Body() data,
+    @Body() data: DiscordCodeDto,
     @Res({ passthrough: true })
     response: Response,
   ) {
@@ -200,8 +223,9 @@ export class AuthController {
     let userData = await this.authservice.getUser(userDiscordData.email);
     response.cookie('x-access-token', res.data.access_token, {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
     });
     response.cookie('x-refresh-token', res.data.refresh_token, {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -211,6 +235,10 @@ export class AuthController {
     if (!userData) {
       userData = await this.authservice.createCreator(userDiscordData);
     }
-    return userData;
+    return {
+      data: userData,
+      accessToken: res.data.access_token,
+      refreshToken: res.data.refresh_token,
+    };
   }
 }

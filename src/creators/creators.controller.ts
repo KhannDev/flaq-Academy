@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CampaignDto } from 'src/campaigns/dto/campaign.dto';
 import { ReqUser } from 'src/common/decorators/req-user.decorator';
 import { CreatorAuthGuard } from 'src/common/usegaurds/creator-auth.guard';
@@ -35,15 +35,24 @@ export class CreatorsController {
   @ApiOperation({
     summary: 'Get Creators Meta Data ',
   })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully Creators Meta Data',
+  })
   @UseGuards(CreatorAuthGuard)
   @Get('Profile')
   async creatorProfile(@ReqUser() req) {
     console.log(req.email);
     return await this.creatorsservice.findCreatorbyEmail(req.email);
   }
-  // @UseGuards(CreatorAuthGuard)
+
+  //Refresh Access token for the User
   @ApiOperation({
     summary: 'Refresh Access Token ',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The User is Logged in  Successfully',
   })
   @Post('token/refresh')
   async RefreshAccessToken(@Body() data: RefreshTokenDto) {
