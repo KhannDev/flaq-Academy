@@ -6,24 +6,16 @@ import {
   HttpException,
   HttpStatus,
   Post,
-  Query,
-  Redirect,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import * as qs from 'qs';
 
 import { HttpService } from '@nestjs/axios';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { response, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
 
-import { RefreshTokenDto, UserCredentialsDto } from '../user/dto/user.dto';
+import { UserCredentialsDto } from '../user/dto/user.dto';
 import { UserService } from '../user/user.service';
 import { HashingService } from '../utils/hashing/hashing.service';
 import { JwtsService } from '../utils/jwt/jwt.service';
@@ -31,6 +23,7 @@ import { AuthService } from './auth.service';
 import configuration from 'src/common/configuration';
 import { CodeArtifact } from 'aws-sdk';
 import { DiscordCodeDto } from './dto/auth.dto';
+import { RefreshTokenDto } from 'src/campaigns/dto/campaign.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -138,11 +131,11 @@ export class AuthController {
   })
   @Post('token/refresh')
   async issueNewAccessToken(
-    @Body() datas: RefreshTokenDto,
+    @Body() body: RefreshTokenDto,
     @Res({ passthrough: true }) response: Response,
   ) {
     try {
-      const data = await this.jwt.decodeRefreshToken(datas.refreshToken);
+      const data = await this.jwt.decodeRefreshToken(body.refreshToken);
 
       const { email } = await this.userservice.findUser(data.userId);
 

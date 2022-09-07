@@ -57,7 +57,7 @@ export class CreatorsController {
   @Post('token/refresh')
   async RefreshAccessToken(@Body() data: RefreshTokenDto) {
     return await this.creatorsservice.RefreshDiscordAccessToken(
-      data.RefreshToken,
+      data.refreshToken,
     );
   }
 }

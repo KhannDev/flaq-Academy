@@ -14,7 +14,3 @@ export class UserCredentialsDto {
 export class UserReferralDto {
   refferalCode: string;
 }
-export class RefreshTokenDto {
-  @IsString()
-  refreshToken: string;
-}

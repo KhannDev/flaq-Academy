@@ -12,6 +12,9 @@ export class Articles {
 export class Quizzes {
   ids: [];
 }
+export class RefreshTokenDto {
+  refreshToken: string;
+}
 export class CampaignDto {
   @IsString()
   description1: string;
