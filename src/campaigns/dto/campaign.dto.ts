@@ -14,7 +14,11 @@ export class Quizzes {
 }
 export class CampaignDto {
   @IsString()
-  description: string;
+  description1: string;
+  @IsString()
+  description2?: string;
+  @IsString()
+  description3?: string;
 
   @IsString()
   title: string;
@@ -23,7 +27,7 @@ export class CampaignDto {
   image: string;
   contentType: string;
 
-  yTVideoUrl?: string;
+  videos?: Video[];
 
   articles?: Articles[];
 
@@ -60,8 +64,25 @@ export class CampaignIdDto {
 
 export class EvaluateQuizDto {
   answers: string[];
-  @ApiProperty()
+
   campaignPartipationId: string;
-  @ApiProperty()
+
   campaignId: string;
+}
+
+export class Video {
+  Url: string;
+  Desc: string;
+  title: string;
+}
+
+export class Lvl1Dto {
+  imageUrl: string;
+  title: string;
+  description: string;
+  level2: string[];
+}
+export class Lvl2Dto {
+  title: string;
+  campaigns: string[];
 }

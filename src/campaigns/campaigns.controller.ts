@@ -15,6 +15,8 @@ import {
   CampaignDto,
   CampaignIdDto,
   EvaluateQuizDto,
+  Lvl1Dto,
+  Lvl2Dto,
   QuizDto,
 } from './dto/campaign.dto';
 
@@ -105,5 +107,31 @@ export class CampaignsController {
     @ReqUser() user,
   ) {
     return this.campaignservice.participateCampaign(campaignId, user);
+  }
+
+  // Get Level 1 Content
+  @Get('/level1')
+  // @UseGuards(UserAuthGuard)
+  async getLvl1Content() {
+    return this.campaignservice.getlvl1Content();
+  }
+
+  @Get('/level2/:id')
+  // @UseGuards(UserAuthGuard)
+  async getLvl2Content(@Param('id') id) {
+    console.log(id);
+    return this.campaignservice.getlvl2Content(id);
+  }
+
+  @Post('/level1')
+  async createLvl1(@Body() data: Lvl1Dto) {
+    return this.campaignservice.createLvl1(data);
+  }
+
+  //Get Level2 Content2 by extacting id from the params
+  @Post('/level2')
+  async createLv2(@Body() data: Lvl2Dto) {
+    console.log(data);
+    return this.campaignservice.createLvl2(data);
   }
 }

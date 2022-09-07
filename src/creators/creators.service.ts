@@ -56,8 +56,8 @@ export class CreatorsService {
       title: data.title,
       articles: data.articles,
       contentType: data.contentType,
-      yTVideoUrl: data.yTVideoUrl || '',
-      image: data.image || '',
+      video: data.video,
+      image: data.image,
       quizzes: data.quizzes,
       status: 'Pipeline',
     });

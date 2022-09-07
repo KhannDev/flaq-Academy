@@ -19,6 +19,14 @@ import {
 } from './schema/participate.schema';
 import { Quiz, QuizSchema } from './schema/quiz.schema';
 import { QuizEntries, QuizEntriesSchema } from './schema/quiz_entries.schema';
+import {
+  CategoriesLv1,
+  CategoriesLv1Schema,
+} from './schema/categories_level1.schema';
+import {
+  CategoriesLv2,
+  CategoriesLv2Schema,
+} from './schema/categories_level2.schema';
 
 @Module({
   imports: [
@@ -30,6 +38,8 @@ import { QuizEntries, QuizEntriesSchema } from './schema/quiz_entries.schema';
       { name: QuizEntries.name, schema: QuizEntriesSchema },
       { name: Creators.name, schema: CreatorsSchema },
       { name: User.name, schema: UserSchema },
+      { name: CategoriesLv1.name, schema: CategoriesLv1Schema },
+      { name: CategoriesLv2.name, schema: CategoriesLv2Schema },
     ]),
     UserModule,
     HttpModule,

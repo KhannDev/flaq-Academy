@@ -51,7 +51,7 @@ export class CreatorAuthGuard implements CanActivate {
       //     );
       //   }
       const { email } = await this.discordGuild.getDiscordUserData(accessToken);
-      console.log('guard email', email);
+
       const creator = await this.creatorservice.findCreatorbyEmail(email);
       console.log(creator);
       if (!creator)
