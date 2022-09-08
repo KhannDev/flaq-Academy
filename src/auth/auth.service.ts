@@ -90,11 +90,11 @@ export class AuthService {
       );
       //check if the user is present in the flaq club server
       // console.log(res);
-      const data = res.data.find((o) => o.name === 'Flaq Club');
+      const data = res.data.find((o) => o.name === 'Flaq Academy');
 
       if (typeof data == 'undefined') {
         throw new HttpException(
-          'User not a member of Flaq Club',
+          'User not a member of Flaq Academy',
           HttpStatus.FORBIDDEN,
         );
       }
