@@ -101,7 +101,7 @@ export class AuthService {
       return data;
     } catch (e) {
       throw new HttpException(
-        'User not a member of Flaq Club',
+        'User not a member of Flaq Academy',
         HttpStatus.FORBIDDEN,
       );
     }
