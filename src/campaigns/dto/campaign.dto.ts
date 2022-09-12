@@ -18,9 +18,9 @@ export class RefreshTokenDto {
 export class CampaignDto {
   @IsString()
   description1: string;
-  @IsString()
+
   description2?: string;
-  @IsString()
+
   description3?: string;
 
   @IsString()
