@@ -8,16 +8,17 @@ import {
   CampaignDto,
   CampaignIdDto,
   EvaluateQuizDto,
+  Lvl2Dto,
   QuizDto,
 } from './dto/campaign.dto';
 import { Campaign, CampaignDocument } from './schema/campaigns.schema';
 import {
   CategoriesLv1,
-  CategoriesLvoneDocument,
+  CategoriesLv1Document,
 } from './schema/categories_level1.schema';
 import {
   CategoriesLv2,
-  CategoriesLvtwoDocument,
+  CategoriesLv2Document,
 } from './schema/categories_level2.schema';
 import {
   ParticipateCampaign,
@@ -32,9 +33,9 @@ export class CampaignsService {
     @InjectModel(Campaign.name)
     private readonly CampaignModel: Model<CampaignDocument>,
     @InjectModel(CategoriesLv1.name)
-    private readonly CategoriesLv1Model: Model<CategoriesLvoneDocument>,
+    private readonly CategoriesLv1Model: Model<CategoriesLv1Document>,
     @InjectModel(CategoriesLv2.name)
-    private readonly CategoriesLv2Model: Model<CategoriesLvtwoDocument>,
+    private readonly CategoriesLv2Model: Model<CategoriesLv2Document>,
     @InjectModel(Quiz.name)
     private readonly QuizModel: Model<QuizDocument>,
     @InjectModel(ParticipateCampaign.name)
@@ -116,7 +117,7 @@ export class CampaignsService {
     });
 
     const obj = { campaign: campaign, participations: participations };
-    console.log(obj);
+
     return obj;
   }
 
@@ -148,53 +149,53 @@ export class CampaignsService {
     }
   }
 
-  async evaluateQuiz(data: EvaluateQuizDto, user) {
-    const { answers, campaignId, campaignPartipationId } = data;
-    const campaign = await this.CampaignModel.findOne({
-      _id: campaignId,
-    }).populate('quizzes');
-    // console.log(campaign);
-    const quizz: any = campaign.quizzes[0];
-    const quizzes = quizz.questions;
-    // console.log(quizzes);
+  // async evaluateQuiz(data: EvaluateQuizDto, user) {
+  //   const { answers, campaignId, campaignPartipationId } = data;
+  //   const campaign = await this.CampaignModel.findOne({
+  //     _id: campaignId,
+  //   }).populate('quizzes');
+  //   // console.log(campaign);
+  //   const quizz: any = campaign.quizzes[0];
+  //   const quizzes = quizz.questions;
+  //   // console.log(quizzes);
 
-    if (quizzes.length !== answers.length)
-      throw new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
-    let correctCount = 0;
+  //   if (quizzes.length !== answers.length)
+  //     throw new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
+  //   let correctCount = 0;
 
-    for (let i = 0; i < answers.length; i++) {
-      if (quizzes[i].answerIndex == answers[i]) {
-        correctCount += 1;
-      }
-    }
+  //   for (let i = 0; i < answers.length; i++) {
+  //     if (quizzes[i].answerIndex == answers[i]) {
+  //       correctCount += 1;
+  //     }
+  //   }
 
-    const questionsCount = quizzes.length;
-    let isPassing = false;
-    if ((correctCount / questionsCount) * 100 >= 80) {
-      isPassing = true;
-    }
-    console.log(isPassing);
-    const quiz_entriesData = await this.QuizEntriesModel.create({
-      user: user._id,
-      campaign: campaign._id,
-      quiz: quizz._id,
-      questionsCount,
-      correctCount,
-      isPassing,
-    });
-    // Updating the campaign participation with isComplete True
-    if (quiz_entriesData) {
-      await this.ParticipateCampaignModel.findByIdAndUpdate(
-        { _id: campaignPartipationId },
-        { $set: { isComplete: true } },
-      );
-    }
-    // rewarding Users with Flaq with the flaqReward mentioned in Campaign
-    // await this.RewardsUser(user._id, campaign.flaqReward);
-    //TODO Reward user with the flaq points mentioned in the campaign
-    return quiz_entriesData;
-  }
-
+  //   const questionsCount = quizzes.length;
+  //   let isPassing = false;
+  //   if ((correctCount / questionsCount) * 100 >= 80) {
+  //     isPassing = true;
+  //   }
+  //   console.log(isPassing);
+  //   const quiz_entriesData = await this.QuizEntriesModel.create({
+  //     user: user._id,
+  //     campaign: campaign._id,
+  //     quiz: quizz._id,
+  //     questionsCount,
+  //     correctCount,
+  //     isPassing,
+  //   });
+  //   // Updating the campaign participation with isComplete True
+  //   if (quiz_entriesData) {
+  //     await this.ParticipateCampaignModel.findByIdAndUpdate(
+  //       { _id: campaignPartipationId },
+  //       { $set: { isComplete: true } },
+  //     );
+  //   }
+  //   // rewarding Users with Flaq with the flaqReward mentioned in Campaign
+  //   // await this.RewardsUser(user._id, campaign.flaqReward);
+  //   //TODO Reward user with the flaq points mentioned in the campaign
+  //   return quiz_entriesData;
+  // }
+  // rewarding users with flaq points of the campaign
   async RewardsUser(Id: string, points: number) {
     try {
       await this.userModel.findByIdAndUpdate(
@@ -215,8 +216,7 @@ export class CampaignsService {
     return res;
   }
   // Creating Level 2 category campaign
-  async createLvl2(data) {
-    console.log('datazz', data);
+  async createLvl2(data: Lvl2Dto) {
     const response = await this.CategoriesLv2Model.create({
       title: data.title,
       campaigns: data.campaigns,
@@ -224,12 +224,12 @@ export class CampaignsService {
     return response.save();
   }
 
-  // fetching level1 content without populating
-  async getlvl1Content() {
+  // fetching level1 category content without populating
+  async getLvl1Content() {
     return this.CategoriesLv1Model.find({});
   }
-  // fetching level1 content without populating
-  async getlvl2Content(id) {
+  // fetching level2 category content
+  async getLvl2Content(id) {
     return await this.CategoriesLv1Model.findOne({ _id: id })
       .populate('level2')
       .populate({

@@ -57,8 +57,8 @@ export class AuthController {
 
       response.cookie('x-access-token', accessToken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
       });
       //Generate Refresh token for the user
       const refreshtokendata = await this.authservice.createRefreshToken(
@@ -68,7 +68,7 @@ export class AuthController {
       response.cookie('x-refresh-token', refreshtoken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        secure: false,
+        secure: true,
       });
       return { accessToken, refreshtoken };
       /** Response to store access and refresh token in cookies */
@@ -108,16 +108,16 @@ export class AuthController {
         secure: false,
       });
 
-      const refreshtokendata = await this.authservice.createRefreshToken(user);
+      const refreshTokenData = await this.authservice.createRefreshToken(user);
 
-      const refreshtoken = await this.jwt.createRefreshToken(refreshtokendata);
+      const refreshToken = await this.jwt.createRefreshToken(refreshTokenData);
 
-      response.cookie('x-refresh-token', refreshtoken, {
+      response.cookie('x-refresh-token', refreshToken, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         httpOnly: true,
         secure: false,
       });
-      return { accessToken, refreshtoken };
+      return { accessToken, refreshToken };
     } else {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -134,24 +134,20 @@ export class AuthController {
     @Body() body: RefreshTokenDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    try {
-      const data = await this.jwt.decodeRefreshToken(body.refreshToken);
+    const data = await this.jwt.decodeRefreshToken(body.refreshToken);
 
-      const { email } = await this.userservice.findUser(data.userId);
+    const { email } = await this.userservice.findUser(data.userId);
 
-      if (email) {
-        const accessToken = await this.jwt.createAccesstoken(email);
+    if (email) {
+      const accessToken = await this.jwt.createAccesstoken(email);
 
-        response.cookie('x-access-token', accessToken, {
-          expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          httpOnly: false,
-          secure: false,
-        });
-        return { accessToken };
-      } else throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
-    } catch (e) {
-      return e;
-    }
+      response.cookie('x-access-token', accessToken, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+      });
+      return { accessToken };
+    } else throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
   }
   //Logout user
   @Get('logout')
@@ -203,7 +199,6 @@ export class AuthController {
     } catch (e) {
       throw new HttpException('Invalid Body request', HttpStatus.BAD_REQUEST);
     }
-    //TODO check if the user is of role Admin
 
     //Check if the user if part of Flaq Club guild
     await this.authservice.userGuild(res.data.access_token);
@@ -222,8 +217,8 @@ export class AuthController {
     });
     response.cookie('x-refresh-token', res.data.refresh_token, {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
     });
     if (!userData) {
       userData = await this.authservice.createCreator(userDiscordData);

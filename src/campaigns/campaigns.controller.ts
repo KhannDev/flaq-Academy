@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBasicAuth,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -83,16 +84,16 @@ export class CampaignsController {
   }
 
   /**Evaluate a Quiz */
-  @ApiOperation({ summary: 'Evaluate quiz' })
-  @ApiResponse({
-    status: 201,
-    description: 'Quiz Evaluated Successfully',
-  })
-  @UseGuards(UserAuthGuard)
-  @Post('/quiz/evaluate')
-  async evaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
-    return this.campaignservice.evaluateQuiz(data, user);
-  }
+  // @ApiOperation({ summary: 'Evaluate quiz' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'Quiz Evaluated Successfully',
+  // })
+  // @UseGuards(UserAuthGuard)
+  // @Post('/quiz/evaluate')
+  // async evaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
+  //   return this.campaignservice.evaluateQuiz(data, user);
+  // }
 
   /**Participate in a Campaign */
   @ApiOperation({ summary: 'Participating a particular campaign' })
@@ -111,16 +112,19 @@ export class CampaignsController {
 
   // Get Level 1 Content
   @Get('/level1')
-  // @UseGuards(UserAuthGuard)
+  @UseGuards(UserAuthGuard)
+  @ApiOperation({ summary: 'Get Level 1 Content ' })
   async getLvl1Content() {
-    return this.campaignservice.getlvl1Content();
+    return this.campaignservice.getLvl1Content();
   }
 
-  @Get('/level2/:id')
-  // @UseGuards(UserAuthGuard)
+  @Get('/level1/:id')
+  @ApiParam({ name: 'id' })
+  @UseGuards(UserAuthGuard)
+  @ApiOperation({ summary: 'Get Level 2 and Level 3 content ' })
   async getLvl2Content(@Param('id') id) {
     console.log(id);
-    return this.campaignservice.getlvl2Content(id);
+    return this.campaignservice.getLvl2Content(id);
   }
 
   @Post('/level1')
@@ -128,7 +132,7 @@ export class CampaignsController {
     return this.campaignservice.createLvl1(data);
   }
 
-  //Get Level2 Content2 by extacting id from the params
+  // Get Level2 Content2 by extacting id from the params
   @Post('/level2')
   async createLv2(@Body() data: Lvl2Dto) {
     console.log(data);

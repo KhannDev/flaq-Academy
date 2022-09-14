@@ -26,7 +26,7 @@ export class CreatorsService {
     return res;
   }
   //Refersh the Access token
-  async RefreshDiscordAccessToken(refresh_token) {
+  async RefreshDiscordAccessToken(refresh_token: string) {
     try {
       const res = await lastValueFrom(
         this.httpservice.request({
