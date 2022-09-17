@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBasicAuth,
   ApiOperation,
@@ -21,11 +29,15 @@ import {
   QuizDto,
 } from './dto/campaign.dto';
 
+/**
+ * Controller for handling Campaings and quiz features
+ */
+
 @ApiTags('Campaigns')
 @Controller('campaigns')
 export class CampaignsController {
   constructor(private readonly campaignservice: CampaignsService) {}
-  // @UseGuards(UserAuthGuard)
+
   @ApiOperation({ summary: 'Creating campaigns for admin' })
   @ApiResponse({
     status: 201,
@@ -36,7 +48,10 @@ export class CampaignsController {
     return this.campaignservice.createCampaign(data);
   }
 
-  /** Create Campaigns  */
+  /** Create Campaigns
+   * @body Campaign meta data
+   */
+
   @ApiOperation({ summary: 'Get all campaigns and participated campaigns' })
   @ApiResponse({
     status: 201,
@@ -48,7 +63,10 @@ export class CampaignsController {
     return await this.campaignservice.getAllCampaigns(user);
   }
 
-  /** Create Quiz Template  */
+  /** Create Quiz Template
+   * @body quiz title and questions
+   */
+
   @ApiOperation({ summary: 'Create quiz for admin' })
   @ApiResponse({
     status: 201,
@@ -59,7 +77,10 @@ export class CampaignsController {
     return this.campaignservice.createQuiz(data);
   }
 
-  /**Adding Quiz to the campaign */
+  /**Adding Quiz to the campaign
+   * @body campaign Id
+   */
+
   @ApiOperation({ summary: 'Add quiz to campaign for Admin' })
   @ApiResponse({
     status: 201,
@@ -70,7 +91,10 @@ export class CampaignsController {
     return this.campaignservice.addQuiztoCampaign(data);
   }
 
-  /**Get quiz template for a campaign */
+  /**Get quiz template for a campaign
+   * @Param Id
+   */
+
   @ApiOperation({ summary: 'Get quiz for a particular campaign' })
   @ApiResponse({
     status: 201,
@@ -83,19 +107,10 @@ export class CampaignsController {
     return res;
   }
 
-  /**Evaluate a Quiz */
-  // @ApiOperation({ summary: 'Evaluate quiz' })
-  // @ApiResponse({
-  //   status: 201,
-  //   description: 'Quiz Evaluated Successfully',
-  // })
-  // @UseGuards(UserAuthGuard)
-  // @Post('/quiz/evaluate')
-  // async evaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
-  //   return this.campaignservice.evaluateQuiz(data, user);
-  // }
+  /**Participate in a Campaign
+   * @body campaignId
+   */
 
-  /**Participate in a Campaign */
   @ApiOperation({ summary: 'Participating a particular campaign' })
   @ApiResponse({
     status: 201,
@@ -110,12 +125,15 @@ export class CampaignsController {
     return this.campaignservice.participateCampaign(campaignId, user);
   }
 
-  // Get Level 1 Content
+  /** Get level1 Content
+   * @Quesy lang
+   */
+
   @Get('/level1')
   @UseGuards(UserAuthGuard)
   @ApiOperation({ summary: 'Get Level 1 Content ' })
-  async getLvl1Content() {
-    return this.campaignservice.getLvl1Content();
+  async getLvl1Content(@Query('lang') lang: string) {
+    return this.campaignservice.getLvl1Content(lang);
   }
 
   @Get('/level1/:id')
@@ -127,15 +145,32 @@ export class CampaignsController {
     return this.campaignservice.getLvl2Content(id);
   }
 
-  @Post('/level1')
-  async createLvl1(@Body() data: Lvl1Dto) {
-    return this.campaignservice.createLvl1(data);
+  @Post('/level1/english')
+  async createEnglishLvl1(@Body() data: Lvl1Dto) {
+    return this.campaignservice.createEnglishLvl1(data);
+  }
+  @ApiParam({ name: 'id' })
+  @Post('/level1/hindi/:id')
+  async createHindiLvl1(@Body() data: Lvl1Dto, @Param('id') id) {
+    console.log(id);
+    return this.campaignservice.createHindiLvl1(data, id);
   }
 
-  // Get Level2 Content2 by extacting id from the params
   @Post('/level2')
   async createLv2(@Body() data: Lvl2Dto) {
     console.log(data);
     return this.campaignservice.createLvl2(data);
   }
 }
+
+/**Evaluate a Quiz */
+// @ApiOperation({ summary: 'Evaluate quiz' })
+// @ApiResponse({
+//   status: 201,
+//   description: 'Quiz Evaluated Successfully',
+// })
+// @UseGuards(UserAuthGuard)
+// @Post('/quiz/evaluate')
+// async evaluateQuiz(@Body() data: EvaluateQuizDto, @ReqUser() user) {
+//   return this.campaignservice.evaluateQuiz(data, user);
+// }

@@ -13,6 +13,8 @@ import { UserService } from '../user/user.service';
 import { RefreshToken } from '../utils/jwt/schema/Refreshtoken';
 import { Creators } from './schema/auth.schema';
 
+/** Service to handle Authentication funtionality */
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -23,6 +25,7 @@ export class AuthService {
     private readonly userservice: UserService,
     private readonly httpservice: HttpService,
   ) {}
+
   async createRefreshToken(data) {
     const refreshToken = await this.refreshTokenModel.create({
       userId: data._id,
@@ -31,14 +34,14 @@ export class AuthService {
     return refreshToken;
   }
 
-  /**Create the User */
+  /**Create User */
+
   async createUser(user: UserCredentialsDto) {
     return await this.userservice.createUser(user);
   }
 
-  //Discord API's
+  /** Creating a Creator */
 
-  // Creating a Contributor
   async createCreator(data) {
     try {
       const res = await this.creatorModel.create({
@@ -49,16 +52,20 @@ export class AuthService {
       });
       return res.save();
     } catch (e) {
-      return null;
+      throw new HttpException(
+        'Creating Creator Failed',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
-  //Get user with email Id
+  /**Get user with email Id */
+
   async getUser(email: string) {
     return this.creatorModel.findOne({ email });
   }
 
-  //Get discored user data
+  /**Get discored user data */
   async getDiscordUserData(access_token) {
     try {
       const res = await lastValueFrom(
@@ -76,8 +83,11 @@ export class AuthService {
     }
   }
 
-  //Check if the user is part of the Guild Flaq Club, If not thorw an error
-  async userGuild(access_token) {
+  /** Check if the user is part of the Guild Flaq Club,
+   * If not throw an error
+   */
+
+  async userGuild(access_token: string) {
     try {
       const res = await lastValueFrom(
         this.httpservice.request({
@@ -88,8 +98,9 @@ export class AuthService {
           },
         }),
       );
+
       //check if the user is present in the flaq club server
-      // console.log(res);
+
       const data = res.data.find((o) => o.name === 'Flaq Academy');
 
       if (typeof data == 'undefined') {
@@ -98,7 +109,6 @@ export class AuthService {
           HttpStatus.FORBIDDEN,
         );
       }
-      return data;
     } catch (e) {
       throw new HttpException(
         'User not a member of Flaq Academy',

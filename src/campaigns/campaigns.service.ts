@@ -8,7 +8,9 @@ import {
   CampaignDto,
   CampaignIdDto,
   EvaluateQuizDto,
+  Lvl1Dto,
   Lvl2Dto,
+  MultipleLang,
   QuizDto,
 } from './dto/campaign.dto';
 import { Campaign, CampaignDocument } from './schema/campaigns.schema';
@@ -78,15 +80,10 @@ export class CampaignsService {
    * @returns Newly created Quiz object
    * */
   async createQuiz(data: QuizDto) {
-    console.log(data);
-    try {
-      await this.QuizModel.create({
-        title: data.title,
-        questions: data.questions,
-      });
-    } catch (e) {
-      console.log(e.message);
-    }
+    await this.QuizModel.create({
+      title: data.title,
+      questions: data.questions,
+    });
   }
 
   /**
@@ -102,13 +99,21 @@ export class CampaignsService {
     });
   }
 
-  async getQuiz(campaignId) {
-    console.log(campaignId);
+  /**
+   * Get Quiz
+   * @body Campaign Id
+   * */
 
+  async getQuiz(campaignId: string) {
     return await this.CampaignModel.findOne({ _id: campaignId }).populate(
       'quizzes',
     );
   }
+
+  /**
+   * Get all Campaigns
+   * @body User object
+   * */
 
   async getAllCampaigns(user) {
     const campaign = await this.CampaignModel.find({});
@@ -121,7 +126,10 @@ export class CampaignsService {
     return obj;
   }
 
-  /**Participate in a Campaign */
+  /**Participate in a Campaign
+   * @body campaign Id and User object
+   */
+
   async participateCampaign(data: CampaignIdDto, user) {
     try {
       const res = await this.CampaignModel.findById({ _id: data.campaignId });
@@ -149,53 +157,7 @@ export class CampaignsService {
     }
   }
 
-  // async evaluateQuiz(data: EvaluateQuizDto, user) {
-  //   const { answers, campaignId, campaignPartipationId } = data;
-  //   const campaign = await this.CampaignModel.findOne({
-  //     _id: campaignId,
-  //   }).populate('quizzes');
-  //   // console.log(campaign);
-  //   const quizz: any = campaign.quizzes[0];
-  //   const quizzes = quizz.questions;
-  //   // console.log(quizzes);
-
-  //   if (quizzes.length !== answers.length)
-  //     throw new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
-  //   let correctCount = 0;
-
-  //   for (let i = 0; i < answers.length; i++) {
-  //     if (quizzes[i].answerIndex == answers[i]) {
-  //       correctCount += 1;
-  //     }
-  //   }
-
-  //   const questionsCount = quizzes.length;
-  //   let isPassing = false;
-  //   if ((correctCount / questionsCount) * 100 >= 80) {
-  //     isPassing = true;
-  //   }
-  //   console.log(isPassing);
-  //   const quiz_entriesData = await this.QuizEntriesModel.create({
-  //     user: user._id,
-  //     campaign: campaign._id,
-  //     quiz: quizz._id,
-  //     questionsCount,
-  //     correctCount,
-  //     isPassing,
-  //   });
-  //   // Updating the campaign participation with isComplete True
-  //   if (quiz_entriesData) {
-  //     await this.ParticipateCampaignModel.findByIdAndUpdate(
-  //       { _id: campaignPartipationId },
-  //       { $set: { isComplete: true } },
-  //     );
-  //   }
-  //   // rewarding Users with Flaq with the flaqReward mentioned in Campaign
-  //   // await this.RewardsUser(user._id, campaign.flaqReward);
-  //   //TODO Reward user with the flaq points mentioned in the campaign
-  //   return quiz_entriesData;
-  // }
-  // rewarding users with flaq points of the campaign
+  /**rewarding users with flaq points of the campaign */
   async RewardsUser(Id: string, points: number) {
     try {
       await this.userModel.findByIdAndUpdate(
@@ -204,18 +166,52 @@ export class CampaignsService {
       );
     } catch (e) {}
   }
-  //Creating Level 1 category campaing
 
-  async createLvl1(data) {
-    const res = this.CategoriesLv1Model.create({
+  /**Creating Level 1 English category campaing */
+
+  async createEnglishLvl1(data: Lvl1Dto) {
+    const res = await this.CategoriesLv1Model.create({
       imageUrl: data.imageUrl,
       title: data.title,
       description: data.description,
       level2: data.level2,
+      language: data.language,
     });
-    return res;
+
+    const multipleLangData = { eng: res._id };
+
+    const result = await this.CategoriesLv1Model.findByIdAndUpdate(res._id, {
+      multipleLang: multipleLangData,
+    });
+    return result;
   }
-  // Creating Level 2 category campaign
+
+  /**Creating Level 1 Hindi category campaing */
+
+  async createHindiLvl1(data: Lvl1Dto, id) {
+    const res = await this.CategoriesLv1Model.create({
+      imageUrl: data.imageUrl,
+      title: data.title,
+      description: data.description,
+      level2: data.level2,
+      language: data.language,
+    });
+
+    const multipleLangData = { hn: res._id, eng: id };
+
+    const result = await this.CategoriesLv1Model.findByIdAndUpdate(res._id, {
+      multipleLang: multipleLangData,
+    });
+
+    await this.CategoriesLv1Model.findByIdAndUpdate(id, {
+      multipleLang: multipleLangData,
+    });
+
+    return result;
+  }
+
+  /**Creating Level 2 category campaign */
+
   async createLvl2(data: Lvl2Dto) {
     const response = await this.CategoriesLv2Model.create({
       title: data.title,
@@ -224,20 +220,72 @@ export class CampaignsService {
     return response.save();
   }
 
-  // fetching level1 category content without populating
-  async getLvl1Content() {
-    return this.CategoriesLv1Model.find({});
+  /** fetching level1 category content without populating*/
+
+  async getLvl1Content(lang: string) {
+    return this.CategoriesLv1Model.find({ language: lang });
   }
-  // fetching level2 category content
-  async getLvl2Content(id) {
+
+  /** fetching level2 category content
+   * @body level1 content Id
+   *  */
+
+  async getLvl2Content(id: string) {
     return await this.CategoriesLv1Model.findOne({ _id: id })
       .populate('level2')
       .populate({
         path: 'level2',
         populate: {
-          path: 'Campaigns',
+          path: 'campaigns',
         },
       })
       .lean();
   }
 }
+
+// async evaluateQuiz(data: EvaluateQuizDto, user) {
+//   const { answers, campaignId, campaignPartipationId } = data;
+//   const campaign = await this.CampaignModel.findOne({
+//     _id: campaignId,
+//   }).populate('quizzes');
+//   // console.log(campaign);
+//   const quizz: any = campaign.quizzes[0];
+//   const quizzes = quizz.questions;
+//   // console.log(quizzes);
+
+//   if (quizzes.length !== answers.length)
+//     throw new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
+//   let correctCount = 0;
+
+//   for (let i = 0; i < answers.length; i++) {
+//     if (quizzes[i].answerIndex == answers[i]) {
+//       correctCount += 1;
+//     }
+//   }
+
+//   const questionsCount = quizzes.length;
+//   let isPassing = false;
+//   if ((correctCount / questionsCount) * 100 >= 80) {
+//     isPassing = true;
+//   }
+//   console.log(isPassing);
+//   const quiz_entriesData = await this.QuizEntriesModel.create({
+//     user: user._id,
+//     campaign: campaign._id,
+//     quiz: quizz._id,
+//     questionsCount,
+//     correctCount,
+//     isPassing,
+//   });
+//   // Updating the campaign participation with isComplete True
+//   if (quiz_entriesData) {
+//     await this.ParticipateCampaignModel.findByIdAndUpdate(
+//       { _id: campaignPartipationId },
+//       { $set: { isComplete: true } },
+//     );
+//   }
+//   // rewarding Users with Flaq with the flaqReward mentioned in Campaign
+//   // await this.RewardsUser(user._id, campaign.flaqReward);
+//   //TODO Reward user with the flaq points mentioned in the campaign
+//   return quiz_entriesData;
+// }

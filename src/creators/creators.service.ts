@@ -1,5 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpServer, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpServer,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { lastValueFrom, queueScheduler } from 'rxjs';
@@ -21,12 +27,14 @@ export class CreatorsService {
     @InjectModel(Campaign.name)
     private readonly campaignmodel: Model<CampaignDocument>,
   ) {}
+
   async findCreatorbyEmail(email) {
     const res = await this.creatormodel.findOne({ email: email });
     return res;
   }
-  //Refersh the Access token
-  async RefreshDiscordAccessToken(refresh_token: string) {
+
+  //Refresh the Access token
+  async refreshDiscordAccessToken(refresh_token: string) {
     try {
       const res = await lastValueFrom(
         this.httpservice.request({
@@ -43,13 +51,16 @@ export class CreatorsService {
           },
         }),
       );
-      console.log(res);
+
       return res.data;
     } catch (e) {
-      return e;
+      throw new HttpException('Invalid body request', HttpStatus.BAD_GATEWAY);
     }
   }
-  //Create Campaign for Creators
+  /***
+   * Create Campaign for Creators
+   *
+   ***/
   async createCampaign(data, user) {
     const res = await this.campaignmodel.create({
       description: data.description,

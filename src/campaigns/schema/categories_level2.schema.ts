@@ -10,6 +10,6 @@ export class CategoriesLv2 {
   @Prop({ type: String })
   title: string;
   @Prop({ type: [{ type: Types.ObjectId, ref: Campaign.name }] })
-  Campaigns: string[] | Campaign[];
+  campaigns: string[] | Campaign[];
 }
 export const CategoriesLv2Schema = SchemaFactory.createForClass(CategoriesLv2);

@@ -25,6 +25,9 @@ import { CodeArtifact } from 'aws-sdk';
 import { DiscordCodeDto } from './dto/auth.dto';
 import { RefreshTokenDto } from 'src/campaigns/dto/campaign.dto';
 
+/**
+ * Controller to handle Authentication
+ */
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -37,7 +40,12 @@ export class AuthController {
     private readonly hashingservice: HashingService,
   ) {}
 
-  /**User sign up  */
+  /**
+   * User sign up
+   * @body email, password and device token
+   * @returns access and refresh token
+   */
+
   @ApiOperation({
     summary: 'user Sign up',
   })
@@ -71,12 +79,17 @@ export class AuthController {
         secure: true,
       });
       return { accessToken, refreshtoken };
-      /** Response to store access and refresh token in cookies */
     } else {
       throw new HttpException('User already Exists', HttpStatus.FORBIDDEN);
     }
   }
-  /**Login in  */
+
+  /**
+   * Login In User
+   * @body email, password and device token
+   * @returns access and refresh token
+   */
+
   @ApiOperation({ summary: 'login In user' })
   @ApiResponse({
     status: 201,
@@ -121,9 +134,14 @@ export class AuthController {
     } else {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-
-    /**Refresh Access token */
   }
+
+  /**
+   * Login In User
+   * @body refresh token
+   * @returns access token
+   */
+
   @ApiOperation({ summary: 'refresh Access token ' })
   @ApiResponse({
     status: 201,

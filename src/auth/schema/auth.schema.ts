@@ -12,7 +12,7 @@ export class Creators {
   @Prop({ type: String })
   email: string;
   @Prop({ type: String })
-  avator: string;
+  avatar: string;
 
   @Prop({ type: String })
   discordId: string;

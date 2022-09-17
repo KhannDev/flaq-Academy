@@ -6,12 +6,16 @@ import { CreatorAuthGuard } from 'src/common/usegaurds/creator-auth.guard';
 import { CreatorsService } from './creators.service';
 import { RefreshTokenDto } from './dto/creators.dto';
 
+/**
+ * Controller to handle Creators features
+ */
+
 @ApiTags('Creators')
 @Controller('creators')
 export class CreatorsController {
   constructor(private readonly creatorsservice: CreatorsService) {}
 
-  // create a campaign for creators( Set the status to Pipeline, and add the campaign Id to the creator)
+  /**create a campaign for creators( Setting the status to Pipeline, and adding the campaign Id to the creator) */
   @ApiOperation({
     summary: 'Create Campaign for the User  ',
   })
@@ -21,7 +25,7 @@ export class CreatorsController {
     return await this.creatorsservice.createCampaign(data, user);
   }
 
-  // Fetch all the campaigns for the creator
+  /**Fetch all the campaigns for the creator */
   @ApiOperation({
     summary: 'Get All Campaings for the user ',
   })
@@ -56,7 +60,7 @@ export class CreatorsController {
   })
   @Post('token/refresh')
   async RefreshAccessToken(@Body() data: RefreshTokenDto) {
-    return await this.creatorsservice.RefreshDiscordAccessToken(
+    return await this.creatorsservice.refreshDiscordAccessToken(
       data.refreshToken,
     );
   }

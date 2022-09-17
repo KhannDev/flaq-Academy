@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { isNotEmpty, IsNotEmpty, isString, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsMongoId,
+  isNotEmpty,
+  IsNotEmpty,
+  isString,
+  IsString,
+} from 'class-validator';
 
 export class Articles {
-  @ApiProperty()
   url: string;
-  @ApiProperty()
+
   title: string;
-  @ApiProperty()
+
   iconUrl: string;
 }
 export class Quizzes {
@@ -28,12 +34,13 @@ export class CampaignDto {
 
   @IsString()
   image: string;
+  @IsString()
   contentType: string;
 
   videos?: Video[];
 
   articles?: Articles[];
-
+  @IsMongoId({ each: true })
   quizzes?: string[];
 }
 export class Questions {
@@ -61,21 +68,21 @@ export class AddQuiztoCampaignDto {
   quizId: string;
 }
 export class CampaignIdDto {
-  @IsString()
+  @IsMongoId()
   campaignId: string;
 }
 
 export class EvaluateQuizDto {
   answers: string[];
-
+  @IsMongoId()
   campaignPartipationId: string;
-
+  @IsMongoId()
   campaignId: string;
 }
 
 export class Video {
-  Url: string;
-  Desc: string;
+  url: string;
+  desc: string;
   title: string;
 }
 
@@ -83,9 +90,16 @@ export class Lvl1Dto {
   imageUrl: string;
   title: string;
   description: string;
+  @IsMongoId({ each: true })
   level2: string[];
+  language: string;
 }
 export class Lvl2Dto {
   title: string;
+  @IsMongoId({ each: true })
   campaigns: string[];
+}
+export class MultipleLang {
+  eng: string;
+  hn: string;
 }
