@@ -6,6 +6,7 @@ export class IdGeneratorService {
   private cumtomNano6: () => string;
   private cumtomNano4: () => string;
   private cumtomNano2: () => string;
+  private cumtomNum4: () => string;
 
   constructor() {
     // this.cumtomNano6 = customAlphabet(
@@ -20,9 +21,13 @@ export class IdGeneratorService {
       'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
       2,
     );
+    this.cumtomNum4 = customAlphabet('1234567890', 4);
   }
 
   generateReferal(prefix: string): string {
     return prefix + '-' + this.cumtomNano4() + '-' + this.cumtomNano2();
+  }
+  generateOtp(): string {
+    return this.cumtomNum4();
   }
 }

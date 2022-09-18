@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { S3 } from 'aws-sdk';
+import { S3, SES } from 'aws-sdk';
 import configuration from '../../common/configuration';
 // import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
@@ -32,6 +32,7 @@ type AwsS3DirectDownloadConfig = {
 @Injectable()
 export class AwsS3Service {
   s3: S3;
+  Ses: SES;
 
   constructor() {
     this.s3 = new S3({
@@ -45,7 +46,7 @@ export class AwsS3Service {
 
   /**
    * Get a signed url for the client to upload a file
-   * @returns
+   * @returns key and url
    */
   async getSignedUrl(fileName, fileExtension) {
     this.s3 = new S3({
@@ -64,9 +65,13 @@ export class AwsS3Service {
     };
     const url = await this.s3.getSignedUrl('putObject', params);
     // this.logger.info(`AWS getSignedUrl success ${url}`);
+
     return {
       key,
       url,
     };
   }
+  /**
+   * Send emails
+   */
 }

@@ -35,7 +35,7 @@ export class CreatorsController {
     return this.creatorsservice.getCampaigns(user);
   }
 
-  //Fetch creator meta data
+  /**Fetch creator meta data */
   @ApiOperation({
     summary: 'Get Creators Meta Data ',
   })
@@ -46,7 +46,6 @@ export class CreatorsController {
   @UseGuards(CreatorAuthGuard)
   @Get('Profile')
   async creatorProfile(@ReqUser() req) {
-    console.log(req.email);
     return await this.creatorsservice.findCreatorbyEmail(req.email);
   }
 

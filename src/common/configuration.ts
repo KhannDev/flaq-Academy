@@ -9,6 +9,14 @@ const configuration = () => ({
   discord_access_id: verifyEnv('DISCORD_ACCESS_ID'),
   discord_secret: verifyEnv('DISCORD_SECRET'),
   discord_redirect_url: verifyEnv('DISCORD_REDIRECT_URL'),
+  smtp: {
+    SMTP_HOST: verifyEnv('SMTP_HOST'),
+    SMTP_PORT: verifyEnv('SMTP_PORT'),
+    SMTP_EMAIL: verifyEnv('SMTP_EMAIL'),
+    SMTP_PASSWORD: verifyEnv('SMTP_PASSWORD'),
+    FROM_NAME: verifyEnv('SMTP_FROM_NAME'),
+    FROM_EMAIL: verifyEnv('SMTP_FROM_EMAIL'),
+  },
 });
 const verifyEnv = (key: string) => {
   // if (!process.env[key]) {
