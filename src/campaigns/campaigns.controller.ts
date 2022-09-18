@@ -30,7 +30,7 @@ import {
 } from './dto/campaign.dto';
 
 /**
- * Controller for handling Campaings and quiz features
+ * Controller for handling Campaigns and quizzes
  */
 
 @ApiTags('Campaigns')
@@ -126,7 +126,7 @@ export class CampaignsController {
   }
 
   /** Get level1 Content
-   * @Quesy lang
+   * @Query lang
    */
 
   @Get('/level1')
@@ -135,6 +135,10 @@ export class CampaignsController {
   async getLvl1Content(@Query('lang') lang: string) {
     return this.campaignservice.getLvl1Content(lang);
   }
+
+  /** Get level2 and Level3  Content
+   * @Param level1 content id
+   */
 
   @Get('/level1/:id')
   @ApiParam({ name: 'id' })
@@ -145,17 +149,32 @@ export class CampaignsController {
     return this.campaignservice.getLvl2Content(id);
   }
 
+  /** Create level 1 English Content
+   * @body title,description,language,level2 array
+   */
+
+  @ApiOperation({ summary: 'Create Level 1 English content  ' })
   @Post('/level1/english')
   async createEnglishLvl1(@Body() data: Lvl1Dto) {
     return this.campaignservice.createEnglishLvl1(data);
   }
+
+  /** Create level 1 hindi Content
+   * @body title,description,language,level2 array
+   */
+
+  @ApiOperation({ summary: 'Create Level 1 Hindi  content ' })
   @ApiParam({ name: 'id' })
   @Post('/level1/hindi/:id')
   async createHindiLvl1(@Body() data: Lvl1Dto, @Param('id') id) {
-    console.log(id);
     return this.campaignservice.createHindiLvl1(data, id);
   }
 
+  /** Create level 1 English Content
+   * @body title, array
+   */
+
+  @ApiOperation({ summary: 'Create Level 2 English/Hindi  content ' })
   @Post('/level2')
   async createLv2(@Body() data: Lvl2Dto) {
     console.log(data);

@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 
 import { EmailService } from 'src/utils/email/email.service';
 import { SendOtpDto, VerifyOtpDto } from './dto/email-otp.dto';
@@ -15,11 +16,26 @@ export class EmailOtpController {
     private readonly emailz: EmailService,
   ) {}
 
+  /**
+   * Send Otp to the email in the request body
+   */
+
+  @ApiOperation({
+    summary: 'Send OTP to the email ',
+  })
   @Post('/sendOtp')
   async sendOtp(@Body() data: SendOtpDto) {
     return this.emailotpservice.sendOtp(data);
   }
 
+  /**
+   * Verify Otp
+   * @body email,otp
+   */
+
+  @ApiOperation({
+    summary: 'Verify Otp ',
+  })
   @Post('/verifyOtp')
   async verifyOtp(@Body() data: VerifyOtpDto) {
     return this.emailotpservice.verifyOtp(data);
