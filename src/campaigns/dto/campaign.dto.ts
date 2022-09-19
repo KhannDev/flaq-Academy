@@ -40,7 +40,7 @@ export class CampaignDto {
   videos?: Video[];
 
   articles?: Articles[];
-  @IsMongoId({ each: true })
+
   quizzes?: string[];
 }
 export class Questions {
@@ -81,8 +81,8 @@ export class EvaluateQuizDto {
 }
 
 export class Video {
-  url: string;
-  desc: string;
+  Url: string;
+  Desc: string;
   title: string;
 }
 
