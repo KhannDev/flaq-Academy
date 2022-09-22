@@ -38,5 +38,6 @@ import {
     IdGeneratorService,
   ],
   controllers: [CreatorsController],
+  exports: [CreatorsService],
 })
 export class CreatorsModule {}

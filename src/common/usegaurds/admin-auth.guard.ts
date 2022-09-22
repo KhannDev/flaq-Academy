@@ -13,7 +13,7 @@ import { UserService } from '../../user/user.service';
 import { JwtsService } from '../../utils/jwt/jwt.service';
 
 @Injectable()
-export class CreatorAuthGuard implements CanActivate {
+export class AdminAuthGuard implements CanActivate {
   constructor(
     private readonly creatorservice: CreatorsService,
     private readonly reflector: Reflector,
@@ -25,9 +25,9 @@ export class CreatorAuthGuard implements CanActivate {
     if (!req.cookies) req.cookies = {};
     if (!req.headers) req.headers = {};
 
-    const { 'x-creator-access-token': accessTokenFromCookie } = req.cookies;
+    const { 'x-admin-access-token': accessTokenFromCookie } = req.cookies;
 
-    const { 'x-creator-refresh-token': accessTokenFromHeader } = req.headers;
+    const { 'x-admin-refresh-token': accessTokenFromHeader } = req.headers;
     // console.log(accessTokenFromHeader);
     if (!accessTokenFromCookie && !accessTokenFromHeader) {
       return false;
@@ -35,17 +35,15 @@ export class CreatorAuthGuard implements CanActivate {
 
     let accessToken: string;
     // If the token is from cookie or header
+
     if (accessTokenFromCookie) accessToken = accessTokenFromCookie;
     else if (accessTokenFromHeader) accessToken = String(accessTokenFromHeader);
 
-    const { email } = await this.discordGuild.getDiscordUserData(accessToken);
+    const userRole = await this.discordGuild.getUserRole(accessToken);
+    if (userRole !== 'Admin') {
+      throw new HttpException('User not of Admin role', HttpStatus.BAD_REQUEST);
+    }
 
-    const creator = await this.creatorservice.findCreatorbyEmail(email);
-
-    if (!creator)
-      throw new HttpException('No Such creators', HttpStatus.BAD_REQUEST);
-
-    req.user = creator;
     return true;
   }
 }

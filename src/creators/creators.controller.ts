@@ -15,7 +15,10 @@ import { RefreshTokenDto } from './dto/creators.dto';
 export class CreatorsController {
   constructor(private readonly creatorsservice: CreatorsService) {}
 
-  /**create a campaign for creators( Setting the status to Pipeline, and adding the campaign Id to the creator) */
+  /**
+   * create a campaign for creators( Setting the status to Pipeline,
+   *  and adding the campaign Id to the creator)
+   *  */
   @ApiOperation({
     summary: 'Create Campaign for the User  ',
   })
@@ -25,7 +28,10 @@ export class CreatorsController {
     return await this.creatorsservice.createCampaign(data, user);
   }
 
-  /**Fetch all the campaigns for the creator */
+  /**
+   * Fetch all the campaigns for the creator
+   *  */
+
   @ApiOperation({
     summary: 'Get All Campaings for the user ',
   })
@@ -35,7 +41,10 @@ export class CreatorsController {
     return this.creatorsservice.getCampaigns(user);
   }
 
-  /**Fetch creator meta data */
+  /**
+   * Fetch creator meta data
+   */
+
   @ApiOperation({
     summary: 'Get Creators Meta Data ',
   })
@@ -49,7 +58,9 @@ export class CreatorsController {
     return await this.creatorsservice.findCreatorbyEmail(req.email);
   }
 
-  //Refresh Access token for the User
+  /**
+   * Refresh Access token for the User
+   */
   @ApiOperation({
     summary: 'Refresh Access Token ',
   })

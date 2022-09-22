@@ -16,7 +16,6 @@ import {
   Campaign,
   CampaignDocument,
 } from 'src/campaigns/schema/campaigns.schema';
-import { userInfo } from 'os';
 
 @Injectable()
 export class CreatorsService {
@@ -28,12 +27,14 @@ export class CreatorsService {
     private readonly campaignmodel: Model<CampaignDocument>,
   ) {}
 
-  async findCreatorbyEmail(email) {
+  async findCreatorbyEmail(email: string) {
     const res = await this.creatormodel.findOne({ email: email });
     return res;
   }
 
-  //Refresh the Access token
+  /***
+   * Refresh Access token
+   ***/
   async refreshDiscordAccessToken(refresh_token: string) {
     try {
       const res = await lastValueFrom(
@@ -57,17 +58,18 @@ export class CreatorsService {
       throw new HttpException('Invalid body request', HttpStatus.BAD_GATEWAY);
     }
   }
+
   /***
    * Create Campaign for Creators
-   *
    ***/
+
   async createCampaign(data, user) {
     const res = await this.campaignmodel.create({
-      description: data.description,
+      description1: data.description1,
       title: data.title,
       articles: data.articles,
       contentType: data.contentType,
-      video: data.video,
+      videos: data.video,
       image: data.image,
       quizzes: data.quizzes,
       status: 'Pipeline',
@@ -80,7 +82,11 @@ export class CreatorsService {
     );
     return res;
   }
-  //fetching campaigns for creator
+
+  /***
+   * Fetching Campaings for creators
+   ***/
+
   async getCampaigns(user) {
     return this.creatormodel.find({ _id: user._id }).populate('campaigns');
   }

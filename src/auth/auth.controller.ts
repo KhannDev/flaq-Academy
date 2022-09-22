@@ -137,7 +137,7 @@ export class AuthController {
   }
 
   /**
-   * Login In User
+   * refresh access token
    * @body refresh token
    * @returns access token
    */
@@ -167,7 +167,11 @@ export class AuthController {
       return { accessToken };
     } else throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
   }
-  //Logout user
+
+  /**
+   * Logout User
+   */
+
   @Get('logout')
   @ApiOperation({
     description: 'Log the user out of the system',
@@ -180,7 +184,13 @@ export class AuthController {
       loggedOut: true,
     };
   }
-  // Authenticating Creators Login from Discords Login
+
+  /**
+   * Authenticate discord user
+   * @body Authorization code
+   * @returns access token,refresh token and user data
+   */
+
   @ApiOperation({
     summary: 'authenticate Discord Login For creators Dashboard',
   })
@@ -218,33 +228,61 @@ export class AuthController {
       throw new HttpException('Invalid Body request', HttpStatus.BAD_REQUEST);
     }
 
-    //Check if the user if part of Flaq Club guild
+    //Check if the user if part of Flaq Club guild and the role of the user
     await this.authservice.userGuild(res.data.access_token);
 
-    //Get discord users meta data
-    const userDiscordData = await this.authservice.getDiscordUserData(
-      res.data.access_token,
-    );
-    //Check if the user is already created
-    let userData = await this.authservice.getUser(userDiscordData.email);
-    response.cookie('x-access-token', res.data.access_token, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-    response.cookie('x-refresh-token', res.data.refresh_token, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
-      secure: true,
-    });
-    if (!userData) {
-      userData = await this.authservice.createCreator(userDiscordData);
+    const userRole = await this.authservice.getUserRole(res.data.access_token);
+    console.log(userRole);
+
+    if (!userRole) {
+      throw new HttpException(
+        'User not of Necessary Role',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return {
-      data: userData,
-      accessToken: res.data.access_token,
-      refreshToken: res.data.refresh_token,
-    };
+
+    //Get discord users meta data
+    if (userRole !== 'Admin') {
+      const userDiscordData = await this.authservice.getDiscordUserData(
+        res.data.access_token,
+      );
+      //Check if the user is already created
+      let userData = await this.authservice.getUser(userDiscordData.email);
+      response.cookie('x-creator-access-token', res.data.access_token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+      });
+      response.cookie('x-creator-refresh-token', res.data.refresh_token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+      });
+      if (!userData) {
+        userData = await this.authservice.createCreator(userDiscordData);
+      }
+      return {
+        role: userRole,
+        data: userData,
+        accessToken: res.data.access_token,
+        refreshToken: res.data.refresh_token,
+      };
+    } else {
+      response.cookie('x-admin-access-token', res.data.access_token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+      });
+      response.cookie('x-admin-refresh-token', res.data.refresh_token, {
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+      });
+      return {
+        role: userRole,
+        accessToken: res.data.access_token,
+        refreshToken: res.data.refresh_token,
+      };
+    }
   }
 }

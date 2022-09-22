@@ -10,6 +10,10 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userservice: UserService) {}
 
+  /**
+   * Create User
+   */
+
   @ApiOperation({ summary: 'create new user' })
   @ApiResponse({
     status: 201,
@@ -20,9 +24,10 @@ export class UserController {
     return this.userservice.createUser(data);
   }
 
-  /**Get user Profile */
+  /**
+   * Apply  User Referral
+   */
 
-  /**Apply  User Referral */
   @ApiOperation({ summary: 'adding Referral Code' })
   @ApiResponse({
     status: 201,
@@ -34,7 +39,10 @@ export class UserController {
     return await this.userservice.applyReferral(code, user);
   }
 
-  //Fetching User Meta data
+  /**
+   * Fetching USer Meta Data
+   */
+
   @ApiOperation({ summary: 'fetching User Meta data' })
   @ApiResponse({
     status: 201,

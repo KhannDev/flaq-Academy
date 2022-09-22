@@ -13,7 +13,11 @@ export class UserService {
     private readonly hashing: HashingService,
     private readonly idgeneratorservice: IdGeneratorService,
   ) {}
-  /** Create User */
+
+  /**
+   *  Create User
+   */
+
   async createUser(data: UserCredentialsDto) {
     const { password } = data;
 
@@ -28,10 +32,19 @@ export class UserService {
     });
     return user;
   }
-  // async UpdateDeviceToken() {}
+
+  /**
+   * find User with email
+   */
+
   findUserwithEmail(email: string) {
     return this.userModel.findOne({ email }).select('+password');
   }
+
+  /**
+   * Apply Referral for User
+   */
+
   async applyReferral(refCode: UserReferralDto, user) {
     //Checking if the user with the provided Referral code Exists
     const res = await this.userModel.findOne({
@@ -57,6 +70,11 @@ export class UserService {
       },
     );
   }
+
+  /**
+   * find User
+   */
+
   async findUser(user) {
     try {
       const res = await this.userModel.findById({ _id: user });

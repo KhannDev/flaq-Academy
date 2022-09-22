@@ -17,6 +17,8 @@ import { AwsS3Service } from './utils/aws/aws.service';
 import { CreatorsModule } from './creators/creators.module';
 import configuration from './common/configuration';
 import { EmailOtpModule } from './email-otp/email-otp.module';
+import { AdminController } from './admin/admin.controller';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { EmailOtpModule } from './email-otp/email-otp.module';
     UtilsModule,
     CreatorsModule,
     EmailOtpModule,
+    AdminModule,
   ],
   controllers: [AppController, UtilsController],
   providers: [AppService, JwtsService, UtilsService, AwsS3Service],

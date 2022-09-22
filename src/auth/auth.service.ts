@@ -116,4 +116,38 @@ export class AuthService {
       );
     }
   }
+
+  /**
+   * To access the role of the user
+   */
+
+  async getUserRole(access_token: string) {
+    const adminId = '998920083776737351';
+    const creatorId = '1020004088370446378';
+
+    let userRole: string;
+    try {
+      const res = await lastValueFrom(
+        this.httpservice.request({
+          method: 'GET',
+          url: 'https://discord.com/api/v6/users/@me/guilds/946822469459787827/member',
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }),
+      );
+      console.log(res.data.roles);
+
+      for (const role of res.data.roles) {
+        if (role === adminId) {
+          userRole = 'Admin';
+        } else if (role === creatorId) {
+          userRole = 'Creator';
+        }
+      }
+      return userRole;
+    } catch (e) {
+      throw new HttpException('Invalid Access token', HttpStatus.UNAUTHORIZED);
+    }
+  }
 }
