@@ -40,7 +40,6 @@ export class UserAuthGuard implements CanActivate {
       if (accessTokenFromCookie) accessToken = accessTokenFromCookie;
       else if (accessTokenFromHeader)
         accessToken = String(accessTokenFromHeader);
-      // console.log('access token', accessToken);
 
       const userEmail = await this.jwt.decodeAccessToken(accessToken);
 

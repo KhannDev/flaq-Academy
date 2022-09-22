@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CampaignsService } from 'src/campaigns/campaigns.service';
 import {
   Campaign,
   CampaignDocument,
@@ -13,19 +14,14 @@ import { addCampaigntoLvl2Dto } from './dto/admin.dto';
 
 @Injectable()
 export class AdminService {
-  constructor(
-    @InjectModel(CategoriesLv2.name)
-    private readonly CampaignLvl2Model: Model<CategoriesLv2Document>,
-    @InjectModel(Campaign.name)
-    private readonly campaignModel: Model<CampaignDocument>,
-  ) {}
+  constructor(private readonly campaignservice: CampaignsService) {}
 
   /**
    * get Level 2 data
    */
 
   async getLvl2() {
-    return await this.CampaignLvl2Model.find({}, { title: 1 });
+    return await this.campaignservice.getAllLvl2();
   }
 
   /**
@@ -34,18 +30,7 @@ export class AdminService {
    */
 
   async updateLvl2(data: addCampaigntoLvl2Dto) {
-    //Update the status of the campaign
-
-    const res = await this.campaignModel.findByIdAndUpdate(data.campaignId, {
-      status: data.status,
-    });
-    // push the campaign Id to level2
-
-    if (data.status === 'Approved') {
-      await this.CampaignLvl2Model.findByIdAndUpdate(data.level2Id, {
-        $push: { campaigns: data.campaignId },
-      });
-    }
+    return await this.campaignservice.updateLvl2(data);
   }
 
   /**
@@ -53,6 +38,6 @@ export class AdminService {
    */
 
   async getPipelineCampaigns() {
-    return await this.campaignModel.find({ status: 'Pipeline' });
+    return await this.campaignservice.getPipelineCampaigns();
   }
 }

@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { Creators, CreatorsSchema } from 'src/auth/schema/auth.schema';
+import { CampaignsService } from 'src/campaigns/campaigns.service';
 import {
   Campaign,
   CampaignSchema,
@@ -54,6 +55,6 @@ import { AdminService } from './admin.service';
     HttpModule,
   ],
   controllers: [AdminController],
-  providers: [AdminService, AuthService, JwtsService],
+  providers: [AdminService, AuthService, JwtsService, CampaignsService],
 })
 export class AdminModule {}

@@ -228,7 +228,7 @@ export class AuthController {
       throw new HttpException('Invalid Body request', HttpStatus.BAD_REQUEST);
     }
 
-    //Check if the user if part of Flaq Club guild and the role of the user
+    // Check if the user if part of Flaq Club guild and the role of the user
     await this.authservice.userGuild(res.data.access_token);
 
     const userRole = await this.authservice.getUserRole(res.data.access_token);
@@ -241,12 +241,14 @@ export class AuthController {
       );
     }
 
-    //Get discord users meta data
+    // Get discord users meta data
+
     if (userRole !== 'Admin') {
       const userDiscordData = await this.authservice.getDiscordUserData(
         res.data.access_token,
       );
-      //Check if the user is already created
+      // Check if the user is already created
+
       let userData = await this.authservice.getUser(userDiscordData.email);
       response.cookie('x-creator-access-token', res.data.access_token, {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { Model } from 'mongoose';
+import { addCampaigntoLvl2Dto } from 'src/admin/dto/admin.dto';
 import { User, UserDocument } from '../user/schema/user.schema';
 import {
   AddQuiztoCampaignDto,
@@ -28,6 +29,8 @@ import {
 } from './schema/participate.schema';
 import { Quiz, QuizDocument } from './schema/quiz.schema';
 import { QuizEntries, QuizEntriesDocument } from './schema/quiz_entries.schema';
+
+/** Service */
 
 @Injectable()
 export class CampaignsService {
@@ -67,7 +70,7 @@ export class CampaignsService {
         status: 'Approved',
         quizzes: data.quizzes,
       });
-      //Add the campaigns to the respective creator
+      // Add the campaigns to the respective creator
       return res;
     } catch (e) {
       return new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
@@ -91,6 +94,7 @@ export class CampaignsService {
    * @params Campaign and quiz Ids
    * @returns Apeended Campaign Object
    * */
+
   async addQuiztoCampaign(data: AddQuiztoCampaignDto) {
     return await this.CampaignModel.findByIdAndUpdate(data.campaignId, {
       $set: {
@@ -157,17 +161,9 @@ export class CampaignsService {
     }
   }
 
-  /**rewarding users with flaq points of the campaign */
-  async RewardsUser(Id: string, points: number) {
-    try {
-      await this.userModel.findByIdAndUpdate(
-        { _id: Id },
-        { $inc: { flaqPoints: points } },
-      );
-    } catch (e) {}
-  }
-
-  /**Creating Level 1 English category campaing */
+  /**
+   * Creating Level 1 English category campaing
+   */
 
   async createEnglishLvl1(data: Lvl1Dto) {
     const res = await this.CategoriesLv1Model.create({
@@ -186,7 +182,9 @@ export class CampaignsService {
     return result;
   }
 
-  /**Creating Level 1 Hindi category campaing */
+  /**
+   * Creating Level 1 Hindi category campaing
+   */
 
   async createHindiLvl1(data: Lvl1Dto, id) {
     const res = await this.CategoriesLv1Model.create({
@@ -210,7 +208,9 @@ export class CampaignsService {
     return result;
   }
 
-  /**Creating Level 2 category campaign */
+  /**
+   * Creating Level 2 category campaign
+   */
 
   async createLvl2(data: Lvl2Dto) {
     const response = await this.CategoriesLv2Model.create({
@@ -220,7 +220,9 @@ export class CampaignsService {
     return response.save();
   }
 
-  /** fetching level1 category content without populating*/
+  /**
+   * fetching level1 category content without populating
+   */
 
   async getLvl1Content(lang: string) {
     return this.CategoriesLv1Model.find({ language: lang });
@@ -241,7 +243,48 @@ export class CampaignsService {
       })
       .lean();
   }
+
+  /**
+   * Get level 2 data
+   */
+
+  async getAllLvl2() {
+    return await this.CategoriesLv2Model.find({}, { title: 1 });
+  }
+
+  /**
+   * Add campaignId to Level2
+   * updating the status of the campaign to Approved or Rejected
+   */
+
+  async updateLvl2(data: addCampaigntoLvl2Dto) {
+    // Update the status of the campaign
+
+    const res = await this.CampaignModel.findByIdAndUpdate(data.campaignId, {
+      status: data.status,
+    });
+    // push the campaign Id to level2
+
+    if (data.status === 'Approved') {
+      await this.CategoriesLv2Model.findByIdAndUpdate(data.level2Id, {
+        $push: { campaigns: data.campaignId },
+      });
+    }
+    return res;
+  }
+
+  /**
+   * Get All Campaigns with pipeline as status
+   */
+
+  async getPipelineCampaigns() {
+    return await this.CampaignModel.find({ status: 'Pipeline' });
+  }
 }
+
+/**
+ * The following code logic is yet to be decided
+ */
 
 // async evaluateQuiz(data: EvaluateQuizDto, user) {
 //   const { answers, campaignId, campaignPartipationId } = data;

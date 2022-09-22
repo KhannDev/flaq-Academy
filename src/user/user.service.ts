@@ -83,4 +83,15 @@ export class UserService {
       throw new HttpException('No Such User', HttpStatus.BAD_REQUEST);
     }
   }
+
+  /**
+   * rewarding users with flaq points of the campaign
+   */
+
+  async RewardsUser(Id: string, points: number) {
+    await this.userModel.findByIdAndUpdate(
+      { _id: Id },
+      { $inc: { flaqPoints: points } },
+    );
+  }
 }
