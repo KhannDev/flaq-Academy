@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { EmailService } from 'src/utils/email/email.service';
 import { SendOtpDto, VerifyOtpDto } from './dto/email-otp.dto';
@@ -9,7 +9,8 @@ import { EmailOtpService } from './email-otp.service';
  * Controller for handling email Otp
  */
 
-@Controller('email-otp')
+@ApiTags('Auth')
+@Controller('auth/email-otp')
 export class EmailOtpController {
   constructor(
     private readonly emailotpservice: EmailOtpService,

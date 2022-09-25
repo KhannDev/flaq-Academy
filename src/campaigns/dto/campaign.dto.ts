@@ -81,8 +81,8 @@ export class EvaluateQuizDto {
 }
 
 export class Video {
-  Url: string;
-  Desc: string;
+  url: string;
+  desc: string;
   title: string;
 }
 
