@@ -118,12 +118,12 @@ export class AuthService {
   }
 
   /**
-   * To access the role of the user
+   * To access the role of the dicord user
    */
 
   async getUserRole(access_token: string) {
-    const adminId = '998920083776737351';
-    const creatorId = '1020004088370446378';
+    const adminId = '99892008377673735';
+    const creatorId = '1023418480080470090';
 
     let userRole: string;
     try {
