@@ -27,7 +27,7 @@ export class AdminAuthGuard implements CanActivate {
 
     const { 'x-admin-access-token': accessTokenFromCookie } = req.cookies;
 
-    const { 'x-admin-refresh-token': accessTokenFromHeader } = req.headers;
+    const { 'x-admin-access-token': accessTokenFromHeader } = req.headers;
     // console.log(accessTokenFromHeader);
     if (!accessTokenFromCookie && !accessTokenFromHeader) {
       return false;
