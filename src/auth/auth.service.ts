@@ -122,25 +122,27 @@ export class AuthService {
    */
 
   async getUserRole(access_token: string) {
-    const adminId = '99892008377673735';
+    const adminId = '998920083776737351';
     const creatorId = '1023418480080470090';
+
+    const guildId = '946822469459787827';
 
     let userRole: string;
     try {
       const res = await lastValueFrom(
         this.httpservice.request({
           method: 'GET',
-          url: 'https://discord.com/api/v6/users/@me/guilds/946822469459787827/member',
+          url: `https://discord.com/api/v6/users/@me/guilds/${guildId}/member`,
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
         }),
       );
-      console.log(res.data.roles);
 
       for (const role of res.data.roles) {
         if (role === adminId) {
           userRole = 'Admin';
+          break;
         } else if (role === creatorId) {
           userRole = 'Creator';
         }
