@@ -16,6 +16,7 @@ import {
   Campaign,
   CampaignDocument,
 } from 'src/campaigns/schema/campaigns.schema';
+import { CampaignDto } from 'src/campaigns/dto/campaign.dto';
 
 @Injectable()
 export class CreatorsService {
@@ -63,13 +64,13 @@ export class CreatorsService {
    * Create Campaign for Creators
    ***/
 
-  async createCampaign(data, user) {
+  async createCampaign(data: CampaignDto, user) {
     const res = await this.campaignmodel.create({
       description1: data.description1,
       title: data.title,
       articles: data.articles,
       contentType: data.contentType,
-      videos: data.video,
+      videos: data.videos,
       image: data.image,
       quizzes: data.quizzes,
       status: 'Pipeline',
