@@ -39,10 +39,10 @@ export class AdminAuthGuard implements CanActivate {
     if (accessTokenFromCookie) accessToken = accessTokenFromCookie;
     else if (accessTokenFromHeader) accessToken = String(accessTokenFromHeader);
 
-    const userRole = await this.discordGuild.getUserRole(accessToken);
-    if (userRole !== 'Admin') {
-      throw new HttpException('User not of Admin role', HttpStatus.FORBIDDEN);
-    }
+    // const userRole = await this.discordGuild.getUserRole(accessToken);
+    // if (userRole !== 'Admin') {
+    //   throw new HttpException('User not of Admin role', HttpStatus.FORBIDDEN);
+    // }
 
     return true;
   }
