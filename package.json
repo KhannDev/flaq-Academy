@@ -30,6 +30,7 @@
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.0.5",
+    "@textile/hub": "^6.3.4",
     "@types/cookie-parser": "^1.4.3",
     "aws-sdk": "^2.1200.0",
     "class-transformer": "^0.5.1",
