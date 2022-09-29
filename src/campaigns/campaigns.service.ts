@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import { Model } from 'mongoose';
@@ -29,11 +29,13 @@ import {
 } from './schema/participate.schema';
 import { Quiz, QuizDocument } from './schema/quiz.schema';
 import { QuizEntries, QuizEntriesDocument } from './schema/quiz_entries.schema';
+import { Client, KeyInfo, ThreadID } from '@textile/hub';
 
 /** Service */
 
 @Injectable()
 export class CampaignsService {
+  value: any;
   constructor(
     @InjectModel(Campaign.name)
     private readonly CampaignModel: Model<CampaignDocument>,
@@ -49,6 +51,11 @@ export class CampaignsService {
     private readonly QuizEntriesModel: Model<QuizEntriesDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
+  //   @Inject('Thread') private readonly Thread,
+  // ) {
+  //   const { value } = this.Thread;
+  //   this.value = value;
+  // }
 
   /**
    * Create Campaign
@@ -71,9 +78,11 @@ export class CampaignsService {
         quizzes: data.quizzes,
       });
       // Add the campaigns to the respective creator
+      const { client, threadId } = await this.getThreadDBProvider();
+      await this.collectionFromSchema(client, threadId, data);
       return res;
     } catch (e) {
-      return new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Request Body Invalid', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -278,8 +287,45 @@ export class CampaignsService {
    */
 
   async getPipelineCampaigns() {
-    return await this.CampaignModel.find({ status: 'Pipeline' });
+    return await this.CampaignModel.find({});
   }
+
+  async test() {}
+
+  getThreadDBProvider = async () => {
+    const keyInfo: KeyInfo = {
+      key: 'bptpczijup3rzdyj7zopdhk7jjm',
+      secret: 'b2y65p3bq4ccjk2mo4gdoqi4ds7qhqyalbyts57a',
+    };
+    const client = await Client.withKeyInfo(keyInfo);
+    const threadId = ThreadID.fromString(
+      'bafkwuip6fdr5m5o75lgtezpkzeuuach4gql4uemxa7yexophqw6wxcq',
+    );
+    return { client, threadId };
+  };
+
+  collectionFromSchema = async (client, threadID, data: CampaignDto) => {
+    // const collection = await client.newCollection(threadID, {
+    //   name: 'campaign',
+    //   schema: schema,
+    // });
+
+    const created = await client.create(threadID, 'campaign', [
+      {
+        title: data.title,
+        description: data.description1,
+        image: data.image,
+        status: 'Pipeline',
+        video: data.videos[0].url,
+        contentType: data.contentType,
+        article: data.articles[0].url,
+      },
+    ]);
+
+    const all = await client.find(threadID, 'campaign', {});
+    // console.log(created);
+    console.log(await all);
+  };
 }
 
 /**
