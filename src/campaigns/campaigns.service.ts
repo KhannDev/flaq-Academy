@@ -72,7 +72,7 @@ export class CampaignsService {
         description1: data.description1,
         contentType: data.contentType,
         videos: data.videos,
-
+        walletAddress: data.walletAddress,
         image: data.image,
         status: 'Approved',
         quizzes: data.quizzes,

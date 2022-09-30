@@ -7,7 +7,11 @@ import { NewsService } from './news.service';
 @Controller('news')
 export class NewsController {
   constructor(private readonly newsservice: NewsService) {}
-  //Create News
+
+  /**
+   * Create News
+   */
+
   @ApiOperation({ summary: 'Create News' })
   @ApiResponse({
     status: 201,
@@ -17,7 +21,11 @@ export class NewsController {
   async createNews(@Body() data: NewsDto) {
     return await this.newsservice.createNews(data);
   }
-  //Get All news in sorted manner
+
+  /**
+   * Get All news in sorted manner
+   */
+
   @ApiOperation({ summary: 'Login In user' })
   @ApiResponse({
     status: 201,

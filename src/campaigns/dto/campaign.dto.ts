@@ -37,6 +37,9 @@ export class CampaignDto {
   @IsString()
   contentType: string;
 
+  @IsString()
+  walletAddress: string;
+
   videos?: Video[];
 
   articles?: Articles[];

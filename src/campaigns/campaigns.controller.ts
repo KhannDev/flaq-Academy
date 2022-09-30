@@ -170,7 +170,7 @@ export class CampaignsController {
     return this.campaignservice.createHindiLvl1(data, id);
   }
 
-  /** Create level 1 English Content
+  /** Create Level 2 English/Hindi content
    * @body title, array
    */
 

@@ -25,7 +25,6 @@ export class CreatorAuthGuard implements CanActivate {
     if (!req.cookies) req.cookies = {};
     if (!req.headers) req.headers = {};
 
-    console.log(req);
     const { 'x-creator-access-token': accessTokenFromCookie } = req.cookies;
 
     const { 'x-creator-access-token': accessTokenFromHeader } = req.headers;

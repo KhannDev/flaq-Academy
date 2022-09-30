@@ -36,6 +36,8 @@ export class Campaign {
   status: CampaignStatus;
   @Prop({ type: String })
   image: string;
+  @Prop({ type: String })
+  walletAddress: string;
   @Prop({ type: [] })
   articles: Articles[];
   @Prop({ type: [{ type: Types.ObjectId, ref: Quiz.name }] })

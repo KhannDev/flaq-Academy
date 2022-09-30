@@ -16,6 +16,7 @@ import {
   Campaign,
   CampaignDocument,
 } from 'src/campaigns/schema/campaigns.schema';
+import { Client, KeyInfo, ThreadID } from '@textile/hub';
 import { CampaignDto } from 'src/campaigns/dto/campaign.dto';
 
 @Injectable()
@@ -74,7 +75,11 @@ export class CreatorsService {
       image: data.image,
       quizzes: data.quizzes,
       status: 'Pipeline',
+      walletAddress: data.walletAddress,
     });
+
+    const { client, threadId } = await this.getThreadDBProvider();
+    await this.collectionFromSchema(client, threadId, data);
     // return res;
 
     await this.creatormodel.findByIdAndUpdate(
@@ -91,4 +96,43 @@ export class CreatorsService {
   async getCampaigns(user) {
     return this.creatormodel.find({ _id: user._id }).populate('campaigns');
   }
+
+  /**
+   * function for creating the client Instance for Textile DB
+   * @returns
+   */
+  getThreadDBProvider = async () => {
+    const keyInfo: KeyInfo = {
+      key: 'bptpczijup3rzdyj7zopdhk7jjm',
+      secret: 'b2y65p3bq4ccjk2mo4gdoqi4ds7qhqyalbyts57a',
+    };
+    const client = await Client.withKeyInfo(keyInfo);
+    const threadId = ThreadID.fromString(
+      'bafkwuip6fdr5m5o75lgtezpkzeuuach4gql4uemxa7yexophqw6wxcq',
+    );
+    return { client, threadId };
+  };
+
+  /**
+   * function for storing the data
+   * @param client Client Id
+   * @param threadID Thread Id
+   * @param data Campaign data
+   */
+  collectionFromSchema = async (client, threadID, data: CampaignDto) => {
+    const created = await client.create(threadID, 'campaign', [
+      {
+        title: data.title,
+        description: data.description1,
+        image: data.image,
+        status: 'Pipeline',
+        video: data.videos[0].url,
+        contentType: data.contentType,
+        article: data.articles[0].url,
+      },
+    ]);
+
+    const all = await client.find(threadID, 'campaign', {});
+    console.log(await all);
+  };
 }
