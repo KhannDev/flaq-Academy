@@ -3,6 +3,8 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { NewsDto } from './dto/news.dto';
 import { NewsService } from './news.service';
 
+/** Controller for handling the news  */
+
 @ApiTags('News')
 @Controller('news')
 export class NewsController {

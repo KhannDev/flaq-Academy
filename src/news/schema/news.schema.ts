@@ -10,5 +10,7 @@ export class News {
   description: string;
   @Prop({ type: String })
   image: string;
+  @Prop({ type: String })
+  url: string;
 }
 export const NewsSchema = SchemaFactory.createForClass(News);

@@ -3,11 +3,14 @@ import { IsString } from 'class-validator';
 
 export class NewsDto {
   @IsString()
-  Image: string;
+  image: string;
 
   @IsString()
-  Title: string;
+  title: string;
 
   @IsString()
   description: string;
+
+  @IsString()
+  url: string;
 }
