@@ -40,7 +40,7 @@ export class AuthService {
     return await this.userservice.createUser(user);
   }
 
-  /** Creating a Creator */
+  /** Creat a Creator */
 
   async createCreator(data) {
     try {
