@@ -11,7 +11,7 @@ export class NewsController {
   constructor(private readonly newsservice: NewsService) {}
 
   /**
-   * Create News
+   * Creates News
    */
 
   @ApiOperation({ summary: 'Create News' })
